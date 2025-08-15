@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart & Customization</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      /* Header */
+      .header {
+        background: linear-gradient(135deg, #1e9cfa 0%, #0ea5e9 100%);
+        color: white;
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        font-size: 16px;
+      }
+
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .search-container {
+        flex: 1;
+        max-width: 400px;
+        margin: 0 24px;
+        position: relative;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 10px 40px 10px 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        background: white;
+        outline: none;
+      }
+
+      .search-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .quick-create {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .user-avatar {
+        width: 32px;
+        height: 32px;
+        background: white;
+        border-radius: 50%;
+        color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      /* Progress Steps */
+     .progress-container {
+        background: white;
+        padding: 24px;
+        border-bottom: 1px solid #e5e7eb;
+        max-width: 1280px;
+        margin: 10px auto;
+        border-radius: 16px;
+      }
+
+      .progress-steps {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        flex: 1;
+        position: relative;
+      }
+
+      .step:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        top: 24px;
+        right: -50%;
+        width: 100%;
+        height: 2px;
+        background: #e4e7ec;
+        z-index: 1;
+      }
+
+      .step.active:not(:last-child)::after {
+        background: #e4e7ec;
+      }
+      .step-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 2;
+        font-size: 20px;
+        color: #9ca3af;
+        border: 1px solid #e4e7ec;
+      }
+
+      /* .step.active .step-icon {
+            background: #1e9cfa;
+            color: white;
+        } */
+
+      .step-label {
+        font-size: 14px;
+        color: #6b7280;
+        font-weight: 500;
+      }
+
+      .step.active .step-label {
+        color: #344054;
+      }
+      /* Main Content */
+        .main-content {
+        background: white;
+        padding: 64px;
+        min-height: calc(100vh - 200px);
+        max-width: 1280px;
+        margin: 10px auto;
+        border-radius: 16px;
+      }
+
+      .content-wrapper {
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 484px;
+        gap: 48px;
+      }
+
+      /* Left Column - Product Info */
+      .product-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .product-display {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0;
+        width: 100%;
+      }
+
+      .product-image {
+        width: 100%;
+        max-width: 600px;
+        height: 400px;
+        background: white;
+        border-radius: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: none;
+        margin-bottom: 32px;
+      }
+
+      .product-description {
+        color: #6b7280;
+        font-size: 16px;
+        line-height: 1.6;
+        max-width: 600px;
+        text-align: left;
+      }
+
+      /* Right Column - Order Details */
+      .order-section {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 24px;
+        height: fit-content;
+        padding: -80px;
+      }
+
+      .order-title {
+        font-size: 16px;
+        color: #101828;
+     border-top: 1px solid #E4E7EC;
+    padding-top: 10px;
+
+      }
+
+      .product-name {
+        font-size: 30px;
+        font-weight: 700;
+        color: #1A1A1A;
+        margin-bottom: 8px;
+      }
+
+      .product-price {
+        font-size: 30px;
+        font-weight: 700;
+        color: #1A1A1A;
+        margin-bottom: 24px;
+      }
+
+      .order-total-section {
+        border-top: 1px solid #e5e7eb;
+        padding-top: 16px;
+        margin-bottom: 24px;
+      }
+
+      .order-total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .order-total-label {
+        font-size: 16px;
+        color: #111827;
+        font-weight: 600;
+      }
+
+      .order-total-value {
+        font-size: 18px;
+        font-weight: 700;
+        color: #111827;
+      }
+
+      .order-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 3px;
+
+        font-weight: bold;
+        gap: 2px;
+      }
+      .product-name {
+        font-size: 20px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 3px;
+        gap: 2px;
+      }
+      .product-price {
+        font-size: 18px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 3px;
+      }
+      .order-total-section {
+        border-top: 1px solid #e5e7eb;
+        padding-top: 16px;
+        margin-bottom: 10px;
+      }
+      .order-total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .order-total-label {
+        font-size: 16px;
+        color: #111827;
+        font-weight: 600;
+      }
+
+      .customize-btn {
+        background: white;
+        border: 1px solid #d1d5db;
+        color: #374151;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom: 12px;
+        transition: all 0.2s ease;
+      }
+
+      .customize-btn:hover {
+        border-color: #1e9cfa;
+        background: #f0f9ff;
+      }
+
+      .done-btn {
+        background: #0086c9;
+        color: white;
+        padding: 10px 10px;
+        font-size: 14px;
+        font-weight: 1000;
+        cursor: pointer;
+        width: 100%;
+        height: 60px;
+        margin-bottom: 24px;
+        transition: background 0.2s ease;
+        border-radius: var(--radius-md, 8px);
+        border: 2px solid
+          var(
+            --Gradient-skeuemorphic-gradient-border,
+            rgba(255, 255, 255, 0.12)
+          );
+        background: var(
+          --Component-colors-Components-Buttons-Primary-button-primary-bg,
+          #0086c9
+        );
+        border-radius: var(--radius-md, 8px);
+      }
+
+      .checkout-btn {
+        background: #1e9cfa;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom: 24px;
+        transition: background 0.2s ease;
+      }
+
+      .checkout-btn:hover {
+        background: #0284c7;
+      }
+
+      .upgrade-section {
+        margin-top: 24px;
+      }
+
+      .upgrade-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 16px;
+      }
+
+      .upgrade-option {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        width: 250px;
+        height: fit-content;
+      }
+
+      .upgrade-option:hover {
+        border-color: #1e9cfa;
+        background: #f0f9ff;
+      }
+
+      .upgrade-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-direction: column;
+      }
+
+      .upgrade-image {
+        width: 40px;
+        height: 24px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .upgrade-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 4px;
+      }
+
+      .upgrade-details {
+        display: flex;
+        flex-direction: column;
+        justify-content: left;
+        align-items: flex-start;
+        width: 100%;
+      }
+      .page-title {
+        margin-bottom: 30px;
+      }
+
+      .upgrade-name {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1A1A1A;
+        margin-bottom: 10px;
+      }
+
+      .upgrade-price {
+        font-size: 18px;
+        color: #1A1A1A;
+      }
+
+      .upgrade-checkbox {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #d1d5db;
+        border-radius: 3px;
+        cursor: pointer;
+        position: relative;
+        place-self: flex-start;
+      }
+
+      .upgrade-info  img {
+        width: 217px;
+        height: 120px;
+      }
+
+      .upgrade-checkbox.checked {
+        background: #1e9cfa;
+        border-color: #1e9cfa;
+      }
+
+      .upgrade-checkbox.checked::after {
+        content: "✓";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .action-buttons {
+        display: flex;
+        width: 50%;
+        height: 30px;
+      }
+
+      .minus {
+        display: flex;
+        padding: 3px 7px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        gap: 2px;
+        flex: 1 0 0;
+        align-self: stretch;
+        border-radius: 10px 0px 0px 10px;
+        border: 1px solid #e4e7ec;
+        background: #fff;
+      }
+
+      .add {
+        display: flex;
+        padding: 3px 7px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2;
+        cursor: pointer;
+        flex: 1 0 0;
+        align-self: stretch;
+        border-radius: 0px 10px 10px 0px;
+        border: 1px solid #e4e7ec;
+        background: #fff;
+      }
+
+      .cart-num {
+        border-top: 1px solid #e4e7ec;
+        border-bottom: 1px solid #e4e7ec;
+        background: white;
+        width: 32px;
+        height: 30px;
+            display: flex
+;
+    justify-content: center;
+    align-items: center;
+      }
+
+      .container {
+       display: flex;
+       flex-direction: column;
+       gap: 24px;
+      }
+
+      .order-summary {
+        background: #fff;
+        align-items: flex-start;
+        justify-content: space-between;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        width: 484px;
+        height: fit-content;
+        border-radius: 16px;
+        padding: 60px 60px 30px 60px;
+      }
+
+      /* Footer Navigation */
+       .footer-nav {
+        background: white;
+        padding: 16px 24px;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1280px;
+        margin: 10px auto;
+        border-radius: 16px;
+      }
+
+      .back-btn {
+        background: none;
+        border: none;
+        color: #6b7280;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+      }
+
+      .save-btn {
+        background: #1e9cfa;
+        border: none;
+        color: white;
+        font-size: 14px;
+        padding: 8px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 1024px) {
+        .content-wrapper {
+          grid-template-columns: 1fr;
+          gap: 32px;
+        }
+
+        .order-section {
+          order: -1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .header {
+          padding: 12px 16px;
+        }
+
+        .search-container {
+          margin: 0 16px;
+          max-width: none;
+        }
+
+        .main-content {
+          padding: 24px 16px;
+        }
+
+        .product-image {
+          width: 100%;
+          max-width: 350px;
+          height: 200px;
+        }
+
+        .footer-nav {
+          padding: 16px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header-actions .quick-create span {
+          display: none;
+        }
+
+        .product-image {
+          height: 180px;
+        }
+
+        .order-section {
+          padding: 20px;
+        }
+      }
+
+      /* Loading and error states */
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        color: #6b7280;
+      }
+
+      .error {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        color: #dc2626;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">
+        <div class="logo-icon">
+          <img src="/WebResource?id=mib-ezra-logo" alt="Logo" width="24" height="24" />
+        </div>
+        <span>Ezra</span>
+      </div>
+      <div class="header-actions">
+        <div class="user-avatar">MM</div>
+      </div>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="progress-container">
+      <div class="progress-steps">
+        <div class="step">
+          <div class="step-icon">
+            <img
+              src="/WebResource?id=package"
+              width="24"
+              height="24"
+              alt="Package Icon"
+            />
+          </div>
+          <div class="step-label">Choose Package</div>
+        </div>
+        <div class="step active">
+          <div class="step-icon">
+            <img
+              src="/WebResource?id=shopping-bag-03"
+              width="24"
+              height="24"
+              alt="Package Icon"
+            />
+          </div>
+          <div class="step-label">Cart & Customization</div>
+        </div>
+        <div class="step">
+          <div class="step-icon">
+            <img
+              src="/WebResource?id=file-check-02"
+              width="24"
+              height="24"
+              alt="Package Icon"
+            />
+          </div>
+          <div class="step-label">Invoice</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="content-wrapper">
+        <!-- Left Column - Extras Grid -->
+        <div>
+          <h1 class="page-title">Extras you may want</h1>
+          <div id="extras-container">
+            <div class="loading">Loading extras...</div>
+          </div>
+        </div>
+        <!-- Right Column - Order Summary -->
+        <div class="order-summary">
+          <div class="container">
+            <h1 class="order-title">Order Summary</h1>
+            <h2 class="product-name" id="summary-product-name">Loading...</h2>
+            <div class="product-price" id="summary-product-price">Loading...</div>
+            
+            <!-- Extras section -->
+            <div id="extras-summary" style="margin: 16px 0; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+              <!-- Extras will be dynamically added here -->
+            </div>
+            
+            <div class="order-total-section">
+              <div class="order-total-row">
+                <span class="order-total-label">Order Total</span>
+                <span class="order-total-value" id="summary-order-total">Loading...</span>
+              </div>
+            </div>
+            <button class="done-btn">DONE</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Navigation -->
+    <div class="footer-nav">
+      <button class="back-btn">← Back</button>
+      <button class="save-btn">Save</button>
+    </div>
+
+    <script>
+      // API Configuration
+      const API_BASE_URL = "https://fff.sandbox.api.ezra360.com/api/v1.0";
+      const API_KEY = "TPiNa.aoAj0IkST3vQlyM9BRPiKphXmXSIxinKB8mPXSbnx5U";
+
+      // Global variables
+      let extrasData = [];
+      let selectedExtras = {};
+      let basePackagePrice = 0;
+      let basePackageName = "Package";
+
+      // Fetch extras from API
+      async function fetchExtras() {
+        try {
+          const myHeaders = new Headers();
+          myHeaders.append("api-key", API_KEY);
+          myHeaders.append("Content-Type", "application/json");
+
+          const raw = JSON.stringify({
+            "entityName": "Product",
+            "requestName": "GetExtraProducts"
+          });
+
+          const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+          };
+
+          const response = await fetch(`${API_BASE_URL}/entities/ExecuteRequest`, requestOptions);
+          const result = await response.json();
+
+          if (result.isSuccess && result.outputParameters && result.outputParameters.ProductData) {
+            return result.outputParameters.ProductData;
+          } else {
+            throw new Error('Failed to fetch extras');
+          }
+        } catch (error) {
+          console.error('Error fetching extras:', error);
+          throw error;
+        }
+      }
+
+      // Format price for display
+      function formatPrice(price) {
+        if (price === 0 || price === 0.0) {
+          return 'Contact for Price';
+        }
+        return `R${price.toLocaleString()}`;
+      }
+
+      // Get fallback image based on product name
+      function getFallbackImage(productName) {
+        const name = productName.toLowerCase();
+        
+        if (name.includes('tent') || name.includes('stretch')) {
+          return '/WebResource?id=tent';
+        }
+        if (name.includes('coffin') || name.includes('spray')) {
+          return '/WebResource?id=Coffin spray';
+        }
+        if (name.includes('refreshment') || name.includes('water')) {
+          return '/WebResource?id=refreshment';
+        }
+        if (name.includes('chair')) {
+          return '/WebResource?id=black chairs';
+        }
+        if (name.includes('flower') || name.includes('rose')) {
+          return '/WebResource?id=Coffin spray';
+        }
+        if (name.includes('audio') || name.includes('sound')) {
+          return '/WebResource?id=refreshment';
+        }
+        
+        // Default fallback
+        return '/WebResource?id=tent';
+      }
+
+      // Get selected package from localStorage
+      function getSelectedPackage() {
+        try {
+          const stored = localStorage.getItem('selectedPackage');
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            return parsed;
+          }
+        } catch (error) {
+          console.error('Error reading selected package:', error);
+        }
+        return null;
+      }
+
+      // Create extra item HTML
+      function createExtraItem(extra, index) {
+        const hasImage = extra.url && extra.url.trim() !== '';
+        const imageUrl = hasImage ? extra.url : getFallbackImage(extra.name);
+        const quantity = selectedExtras[extra.name] || 0;
+        const isSelected = quantity > 0;
+
+        return `
+          <div class="upgrade-option" data-extra-name="${extra.name}" data-price="${extra.costPrice}">
+            <div class="upgrade-info">
+              <div class="upgrade-checkbox ${isSelected ? 'checked' : ''}" data-extra="${extra.name}"></div>
+              <img src="${imageUrl}" alt="${extra.name}" onerror="this.src='/WebResource?id=tent'" />
+              <div class="upgrade-details">
+                <div class="upgrade-name">${extra.name}</div>
+                <div class="upgrade-price">${formatPrice(extra.costPrice)}</div>
+              </div>
+              <div class="action-buttons">
+                <button class="minus" data-extra="${extra.name}">-</button>
+                <span class="cart-num" data-extra="${extra.name}">${quantity}</span>
+                <button class="add" data-extra="${extra.name}">+</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Render extras grid
+      function renderExtras(extras) {
+        const container = document.getElementById('extras-container');
+        
+        if (!extras || extras.length === 0) {
+          container.innerHTML = '<div class="error">No extras available</div>';
+          return;
+        }
+
+        const extrasHTML = `
+          <div class="extras-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
+            ${extras.map((extra, index) => createExtraItem(extra, index)).join('')}
+          </div>
+        `;
+        
+        container.innerHTML = extrasHTML;
+        attachEventListeners();
+      }
+
+      // Calculate total price
+      function calculateTotal() {
+        let extrasTotal = 0;
+        
+        Object.keys(selectedExtras).forEach(extraName => {
+          const quantity = selectedExtras[extraName];
+          const extra = extrasData.find(e => e.name === extraName);
+          if (extra && quantity > 0) {
+            extrasTotal += extra.costPrice * quantity;
+          }
+        });
+        
+        return basePackagePrice + extrasTotal;
+      }
+
+      // Update quantity for an extra
+      function updateExtraQuantity(extraName, change) {
+        const currentQuantity = selectedExtras[extraName] || 0;
+        const newQuantity = Math.max(0, currentQuantity + change);
+        
+        if (newQuantity === 0) {
+          delete selectedExtras[extraName];
+        } else {
+          selectedExtras[extraName] = newQuantity;
+        }
+        
+        // Update UI
+        const quantitySpan = document.querySelector(`[data-extra="${extraName}"].cart-num`);
+        const checkbox = document.querySelector(`[data-extra="${extraName}"].upgrade-checkbox`);
+        
+        if (quantitySpan) {
+          quantitySpan.textContent = newQuantity;
+        }
+        
+        if (checkbox) {
+          if (newQuantity > 0) {
+            checkbox.classList.add('checked');
+          } else {
+            checkbox.classList.remove('checked');
+          }
+        }
+        
+        // Update total
+        updateOrderSummary();
+      }
+
+      // Update order summary
+      function updateOrderSummary() {
+        const total = calculateTotal();
+        document.getElementById('summary-order-total').textContent = formatPrice(total);
+        
+        // Update extras summary
+        updateExtrasSummary();
+        
+        // Save current state to localStorage
+        const orderData = {
+          basePackage: {
+            name: basePackageName,
+            price: basePackagePrice
+          },
+          extras: selectedExtras,
+          total: total,
+          timestamp: Date.now()
+        };
+        localStorage.setItem('orderData', JSON.stringify(orderData));
+      }
+
+      // Update extras summary section
+      function updateExtrasSummary() {
+        const extrasSummaryContainer = document.getElementById('extras-summary');
+        
+        // Get selected extras
+        const selectedExtrasArray = Object.keys(selectedExtras).filter(extraName => selectedExtras[extraName] > 0);
+        
+        if (selectedExtrasArray.length === 0) {
+          extrasSummaryContainer.innerHTML = '';
+          return;
+        }
+        
+        let extrasHTML = '<div style="margin-bottom: 8px; font-weight: 600; color: #111827; font-size: 14px;">Extras:</div>';
+        
+        selectedExtrasArray.forEach(extraName => {
+          const quantity = selectedExtras[extraName];
+          const extra = extrasData.find(e => e.name === extraName);
+          
+          if (extra && quantity > 0) {
+            const itemTotal = extra.costPrice * quantity;
+            extrasHTML += `
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 14px; color: #6b7280;">
+                <span>${extraName} (${quantity}x)</span>
+                <span>${formatPrice(itemTotal)}</span>
+              </div>
+            `;
+          }
+        });
+        
+        extrasSummaryContainer.innerHTML = extrasHTML;
+      }
+
+      // Attach event listeners
+      function attachEventListeners() {
+        // Checkbox click handlers
+        document.querySelectorAll('.upgrade-checkbox').forEach(checkbox => {
+          checkbox.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const extraName = checkbox.dataset.extra;
+            const currentQuantity = selectedExtras[extraName] || 0;
+            
+            if (currentQuantity === 0) {
+              updateExtraQuantity(extraName, 1);
+            } else {
+              updateExtraQuantity(extraName, -currentQuantity);
+            }
+          });
+        });
+
+        // Plus button handlers
+        document.querySelectorAll('.add').forEach(button => {
+          button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const extraName = button.dataset.extra;
+            updateExtraQuantity(extraName, 1);
+          });
+        });
+
+        // Minus button handlers
+        document.querySelectorAll('.minus').forEach(button => {
+          button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const extraName = button.dataset.extra;
+            updateExtraQuantity(extraName, -1);
+          });
+        });
+      }
+
+      // Show error state
+      function showError(message) {
+        document.getElementById('extras-container').innerHTML = `<div class="error">${message}</div>`;
+      }
+
+      // Load saved order data from localStorage
+      function loadSavedOrderData() {
+        try {
+          const saved = localStorage.getItem('orderData');
+          if (saved) {
+            const orderData = JSON.parse(saved);
+            selectedExtras = orderData.extras || {};
+          }
+        } catch (error) {
+          console.error('Error loading saved order data:', error);
+        }
+      }
+
+      // Initialize the extras page
+      async function initializeExtrasPage() {
+        try {
+          // Load selected package info
+          const selectedPackage = getSelectedPackage();
+          if (selectedPackage) {
+            basePackageName = selectedPackage.name;
+            basePackagePrice = selectedPackage.price || 0;
+          }
+
+          // Update summary with base package info
+          document.getElementById('summary-product-name').textContent = basePackageName;
+          document.getElementById('summary-product-price').textContent = formatPrice(basePackagePrice);
+
+          // Load saved extras selections
+          loadSavedOrderData();
+
+          // Fetch extras from API
+          extrasData = await fetchExtras();
+          
+          if (!extrasData || extrasData.length === 0) {
+            showError('No extras available');
+            return;
+          }
+
+          // Render extras
+          renderExtras(extrasData);
+          
+          // Update initial totals
+          updateOrderSummary();
+
+        } catch (error) {
+          console.error('Error initializing extras page:', error);
+          showError('Failed to load extras. Please try again later.');
+        }
+      }
+
+      // Button handlers
+      document.querySelector('.done-btn').addEventListener('click', () => {
+        // Save final order data and route to cart page
+        const orderData = {
+          basePackage: {
+            name: basePackageName,
+            price: basePackagePrice
+          },
+          extras: selectedExtras,
+          total: calculateTotal(),
+          timestamp: Date.now()
+        };
+        localStorage.setItem('orderData', JSON.stringify(orderData));
+        
+        // Route back to cart page
+        window.location.href = '/WebResource?id=cart';
+      });
+
+      document.querySelector('.back-btn').addEventListener('click', () => {
+        // Go back to previous page
+        window.history.back();
+      });
+
+      document.querySelector('.save-btn').addEventListener('click', () => {
+        // Save current selections
+        const orderData = {
+          basePackage: {
+            name: basePackageName,
+            price: basePackagePrice
+          },
+          extras: selectedExtras,
+          total: calculateTotal(),
+          timestamp: Date.now()
+        };
+        localStorage.setItem('orderData', JSON.stringify(orderData));
+        alert('Selections saved successfully!');
+      });
+
+      // Start the application
+      document.addEventListener('DOMContentLoaded', initializeExtrasPage);
+    </script>
+  </body>
+</html>

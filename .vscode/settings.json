@@ -1,0 +1,5 @@
+{
+    "vs-code-prettier-eslint.prettierLast": true,
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+    "notebook.defaultFormatter": "rvest.vs-code-prettier-eslint"
+}

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,7 +40,6 @@
         .logo-icon {
             width: 32px;
             height: 32px;
-            background: rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -92,11 +90,12 @@
             gap: 6px;
         }
 
-        .user-avatar {
+       .user-avatar {
             width: 32px;
             height: 32px;
-            background: rgba(255, 255, 255, 0.2);
+            background: white;
             border-radius: 50%;
+            color: black;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -104,7 +103,6 @@
             font-size: 14px;
             cursor: pointer;
         }
-
         /* Progress Steps */
         .progress-container {
             background: white;
@@ -164,7 +162,7 @@
         /* Main Content */
         .main-content {
             background: white;
-            min-height: calc(100vh - 140px);
+            min-height: calc(100vh - 60px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -178,14 +176,14 @@
         }
 
         .success-icon {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             background: #dcfce7;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 32px;
+            margin: 0 auto 20px;
             position: relative;
         }
 
@@ -197,18 +195,17 @@
         }
 
         .success-title {
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 700;
-            color: #111827;
-            margin-bottom: 16px;
-            text-align: start;
+            color: #101828;
+            margin-bottom: 10px;
         }
 
         .success-message {
-            color: #6b7280;
-            font-size: 16px;
+            color: #475467;
+            font-size: 14px;
             line-height: 1.6;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .package-name {
@@ -216,64 +213,22 @@
             color: #111827;
         }
 
-        .save-btn {
-            background: #1e9cfa;
+        .home-btn {
+            background: #0086C9;
             color: white;
             border: none;
             padding: 14px 32px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s ease;
-            min-width: 200px;
+            min-width: 300px;
         }
 
-        .save-btn:hover {
-            background: #0284c7;
+        .home-btn:hover {
+            background: #0086C9;
         }
-
-
-
-.Continue-btn {
-  
-            color: black;
-            border: none;
-            padding: 14px 32px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s ease;
-            min-width: 200px;
-            
-            border-radius: var(--radius-md, 8px);
-border: 1px solid var(--Component-colors-Components-Buttons-Secondary-button-secondary-border, #D0D5DD);
-background: var(--Component-colors-Components-Buttons-Secondary-button-secondary-bg, #FFF);
-/* Shadows/shadow-xs-skeuomorphic */
-box-shadow: 0 0 0 1px var(--Colors-Effects-Shadows-shadow-skeumorphic-inner-border, rgba(16, 24, 40, 0.18)) inset, 0 -2px 0 0 var(--Colors-Effects-Shadows-shadow-skeumorphic-inner, rgba(16, 24, 40, 0.05)) inset, 0 1px 2px 0 var(--Colors-Effects-Shadows-shadow-xs, rgba(16, 24, 40, 0.05));
-        }
-
-        .continue-btn:hover {
-            background: #0284c7;
-        }
-
-
-        .box-grid {
-             display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            padding: 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            width:450px;
-            height: 350px;
-        }
-
-
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -344,45 +299,38 @@ box-shadow: 0 0 0 1px var(--Colors-Effects-Shadows-shadow-skeumorphic-inner-bord
     <!-- Header -->
     <div class="header">
         <div class="logo">
-            <div class="logo-icon">☁</div>
-            <span>Company Name</span>
+            <div class="logo-icon">
+                <img src="/WebResource?id=mib-ezra-logo" alt="Logo" width="24" height="24">
+            </div>
+            <span>Ezra</span>
         </div>
-        <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search for a page">
-            <div class="search-icon">🔍</div>
-        </div>
+       
         <div class="header-actions">
-            <button class="quick-create">
-                <span>⊕</span>
-                <span>Quick Create</span>
-            </button>
+          
             <div class="user-avatar">MM</div>
         </div>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="box-grid">
         <div class="success-container">
             <div class="success-icon"></div>
-            <h1 class="success-title">Saving Order</h1>
-            <p class="Continue-message">
-                Are you sure you want to save this order to continue later ? 
+            <h1 class="success-title">Order Completed</h1>
+            <p class="success-message">
+                Your order for the <span class="package-name">Kingston Maluti Package</span> has been<br>
+                submitted successfully.
             </p>
-            <button class="save-btn" >Yes,Save</button>
-            <button class="Continue-btn">No,Continue</button>
+            <button class="home-btn" onclick="goToHome()">Back to Home</button>
         </div>
     </div>
-</div>
+
     <script>
-       
-         document.querySelector('.Continue-btn').addEventListener('click', () => {
-            alert('Continuing with the order...');
-        });
+        function goToHome() {
+             window.location.href = '/WebResource?id=products';
+        }
 
-
-        document.querySelector('.save-btn').addEventListener('click', () => {
-            alert('Order saved successfully!');
+        document.querySelector('.quick-create').addEventListener('click', () => {
+            alert('Opening Quick Create');
         });
     </script>
 </body>

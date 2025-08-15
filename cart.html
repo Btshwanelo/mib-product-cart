@@ -39,7 +39,6 @@
         .logo-icon {
             width: 32px;
             height: 32px;
-            background: rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -93,8 +92,9 @@
         .user-avatar {
             width: 32px;
             height: 32px;
-            background: rgba(255, 255, 255, 0.2);
+            background: white;
             border-radius: 50%;
+            color: black;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -108,6 +108,9 @@
             background: white;
             padding: 24px;
             border-bottom: 1px solid #e5e7eb;
+            max-width: 1280px;
+            margin:10px auto;
+            border-radius: 16px;
         }
 
         .progress-steps {
@@ -128,25 +131,25 @@
         }
 
         .step:not(:last-child)::after {
-            content: '';
+             content: '';
             position: absolute;
             top: 24px;
             right: -50%;
             width: 100%;
             height: 2px;
-            background: #1e9cfa;
+            background: #e5e7eb;
             z-index: 1;
         }
 
-        .step.active:not(:last-child)::after {
+        /* .step.active:not(:last-child)::after {
             background: #1e9cfa;
-        }
+        } */
 
         .step-icon {
             width: 48px;
             height: 48px;
-            border-radius: 8px;
-            background: #1e9cfa;
+            border-radius: 12px;
+            background: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -154,33 +157,39 @@
             position: relative;
             z-index: 2;
             font-size: 20px;
-            color: white;
+            color: #9ca3af;
+            border: 1px solid #E4E7EC;
         }
 
-        .step.inactive .step-icon {
+        /* .step.inactive .step-icon {
             background: #f3f4f6;
             color: #9ca3af;
-        }
+        } */
 
         .step-label {
-            font-size: 14px;
-            color: #1e9cfa;
+              font-size: 14px;
+            color: #6b7280;
             font-weight: 500;
         }
 
-        .step.inactive .step-label {
-            color: #6b7280;
+        .step.active .step-label {
+            color: #344054;
         }
 
         /* Main Content */
         .main-content {
-            background: white;
-            padding: 32px 24px;
+             background: white;
+            padding: 32px 14px;
             min-height: calc(100vh - 200px);
+            max-width: 1280px;
+            margin:10px auto;
+            border-radius: 16px;
+            display: flex;
+            
         }
 
         .content-wrapper {
-            max-width: 1200px;
+            /* max-width: 1200px; */
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr 400px;
@@ -238,7 +247,12 @@
             margin-bottom: 8px;
         }
 
-        
+        .product-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
 
         .product-price {
             font-size: 24px;
@@ -270,11 +284,6 @@
             font-size: 18px;
             font-weight: 700;
             color: #111827;
-        }
-
-
-        .order-total-value order-total-value {
-            justify-self: flex-end;
         }
 
         .customize-btn {
@@ -309,6 +318,56 @@
             margin-bottom: 24px;
             transition: background 0.2s ease;
         }
+
+        .benefit-icon {
+    width: 16px;
+    height: 16px;
+    border:2px solid #0086C9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.benefit-icon::after {
+    content: '✓';
+    color: #0086C9;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+        .benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 14px;
+    color: #475467;
+    text-align: left;
+}
+
+        .benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+
+        .benefits-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+          .benefits-section {
+    display: block;
+    padding: 20px 0 0 0;
+    border-top: 1px solid #E4E7EC;
+    margin-top: 20px;
+}
 
         .checkout-btn:hover {
             background: #0284c7;
@@ -397,69 +456,18 @@
             font-size: 12px;
             font-weight: bold;
         }
-       .invoice {
-        text-align: center;
-        padding: 30px;
-        font-size: 3rem; 
-    }
-    .product-name {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: #111827;
-        margin-bottom: 8px;
-    }
-    .extra, .OT {
-        font-size: 1.6rem; 
-    }
-    .Complete-btn {
-        display: flex;
-        justify-content: flex-end;  
-        align-items: flex-end;
-        width: 7%;
-        margin-top: 16px;
-    }
-   
-.order-total-row {
-    display: flex;
-    justify-content: flex-end; 
-    align-items: center;
-    margin-bottom: 8px;
-}
 
-.Complete-btn-container {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    margin-top: 16px;
-     text-align: center;
-}
-
-.Complete-btn {
-    background: #0086C9;
-            border: none;
-            color: white;
-            font-size: 13px;
-            padding: 12px 25px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-right: 2px;
-             width: 15%;
-            padding-left: 10%;
-            text-align: center;
-          
-
-}   
-
-
-
-/* Footer Navigation */
+        /* Footer Navigation */
         .footer-nav {
-            background: white;
+             background: white;
             padding: 16px 24px;
             border-top: 1px solid #e5e7eb;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            max-width: 1280px;
+            margin:10px auto;
+            border-radius: 16px;
         }
 
         .back-btn {
@@ -473,8 +481,7 @@
             gap: 8px;
             padding: 8px 16px;
         }
-            
-        
+
         .save-btn {
             background: #0086C9;
             border: none;
@@ -483,13 +490,6 @@
             padding: 8px 24px;
             border-radius: 6px;
             cursor: pointer;
-        }
-        
-
-        .container {
-            margin-inline: auto;
-            max-inline-size: 100%;
-            margin: 0;
         }
 
         /* Responsive Design */
@@ -546,48 +546,43 @@
 </head>
 <body>
     <!-- Header -->
-    <div class="header">
+     <div class="header">
         <div class="logo">
-            <div class="logo-icon">☁</div>
-            <span>Company Name</span>
+            <div class="logo-icon">
+                <img src="/assets/Small.png" alt="Logo" width="24" height="24">
+            </div>
+            <span>Ezra</span>
         </div>
         <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search for a page">
-            <div class="search-icon">🔍</div>
+            <!-- <input type="text" class="search-input" placeholder="Search for a page">
+            <div class="search-icon"></div> -->
         </div>
         <div class="header-actions">
-            <button class="quick-create">
-                <span>⊕</span>
+            <!-- <button class="quick-create">
                 <span>Quick Create</span>
-            </button>
+            </button> -->
             <div class="user-avatar">MM</div>
         </div>
     </div>
 
     <!-- Progress Steps -->
-    <div class="progress-container">
+      <div class="progress-container">
         <div class="progress-steps">
             <div class="step">
                 <div class="step-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 4V6C15 7.66 13.66 9 12 9S9 7.66 9 6V4L3 7V9L9 12V22H15V12L21 9Z"/>
-                    </svg>
+                    <img src="/assets/package.svg" width="24" height="24" alt="Package Icon" />
                 </div>
                 <div class="step-label">Choose Package</div>
             </div>
             <div class="step active">
                 <div class="step-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19,7H15V6A3,3 0 0,0 12,3A3,3 0 0,0 9,6V7H5A1,1 0 0,0 4,8V19A3,3 0 0,0 7,22H17A3,3 0 0,0 20,19V8A1,1 0 0,0 19,7M9,6A1,1 0 0,1 10,5H14A1,1 0 0,1 15,6V7H9V6Z"/>
-                    </svg>
+                    <img src="/assets/shopping-bag-03.svg" width="24" height="24" alt="Package Icon" />
                 </div>
                 <div class="step-label">Cart & Customization</div>
             </div>
-            <div class="step inactive">
+            <div class="step">
                 <div class="step-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-                    </svg>
+                    <img src="/assets/file-check-02.png" width="24" height="24" alt="Package Icon" />
                 </div>
                 <div class="step-label">Invoice</div>
             </div>
@@ -595,47 +590,126 @@
     </div>
 
     <!-- Main Content -->
-    
-    <h1 class="invoice"> Invoice </h1>
-    <div class=" container">
- <div class="order-total-section">
-    <div class="order-title">Order Summary</div>
-
-            <h2 class="product-name">Kingston Maluti</h2>
-            <div class="product-price">R30,000</div>
-
-
- <div class="order-total-section">
-     
-            <h3 class="extra">Extras</h3>
-            <ul> 
-                <li> Refreshments             </li>
-                <li> Cooler                    </li>
-                <li> Mobile Toilet              </li>
-            </ul>
-
-            </div>
-            <div class="order-total-section">
-            <h3 class="OT">Order Total</h3>
-            
-                <div class="order-total-row">
-                  
-                    <span class="order-total-value ">R30,000</span>
+    <div class="main-content">
+        <div class="content-wrapper">
+            <!-- Left Column - Product Display -->
+             <div>
+            <img src="/assets/Kingston Maluti.png" alt="Kingston-Maluti" />
+            <div class="product-description">
+                    Provide your audience with an extensive array of options, ensuring a comprehensive showcase of the full range of product features. Our diverse selection caters to various preferences and needs, empowering customers to explore and find the perfect fit for their requirements.
                 </div>
-                <div class="Complete-btn-container ">
-         <button class="Complete-btn">Complete Order</button>
-</div>
-          <div class="order-total-section">
-          <h4 class="benefits">Benefits</h4>
-          <ul>
-            <li>Coffin</li>
-            <li> Hearse </li>
-          </ul>
-</div>
- </div>
- </div>
-</div>
-</div>
+                    <div class="benefits-section" id="benefits-fantasy">
+        <h4 class="benefits-title">Benefits</h4>
+        <ul class="benefits-list">
+            <li class="benefit-item">
+                <div class="benefit-icon"></div>
+                <span>Premium Coffin</span>
+            </li>
+            <li class="benefit-item">
+                <div class="benefit-icon"></div>
+                <span>Luxury Hearse</span>
+            </li>
+            <li class="benefit-item">
+                <div class="benefit-icon"></div>
+                <span>Family Car within the first 500km</span>
+            </li>
+            <li class="benefit-item">
+                <div class="benefit-icon"></div>
+                <span>Premium Coffin Spray (Fresh Flower)</span>
+            </li>
+            <li class="benefit-item">
+                <div class="benefit-icon"></div>
+                <span>Full Refreshments at grave site</span>
+            </li>
+            <li class="benefit-item">
+                <div class="benefit-icon"></div>
+                <span>Premium Decor at grave site</span>
+            </li>
+            <li class="benefit-item">
+                <div class="benefit-icon"></div>
+                <span>Custom Grave board</span>
+            </li>
+            <li class="benefit-item">
+                <div class="benefit-icon"></div>
+                <span>200 color programs</span>
+            </li>
+        </ul>
+    </div>
+        </div>
+
+             <!-- Right Column - Order Details -->
+            <div class="order-section">
+                <div class="order-title">Order Details</div>
+                <h2 class="product-name">Kingston Maluti</h2>
+                <div class="product-price">R30 000</div>
+                
+                <div class="order-total-section">
+                    <div class="order-total-row">
+                        <span class="order-total-label">Order Total</span>
+                        <span class="order-total-value">R30 000</span>
+                    </div>
+                </div>
+                
+                <button class="customize-btn">Customize</button>
+                <button class="checkout-btn">Proceed to Checkout</button>
+                
+                <div class="upgrade-section">
+                    <h3 class="upgrade-title">Upgrade Package</h3>
+                    
+                    <div class="upgrade-option" data-price="30000">
+                        <div class="upgrade-info">
+                             <img src="/assets/kingston Mal.png" alt="kingston Mal small image" />
+                            <div class="upgrade-details">
+                                <div class="upgrade-name">Kingston Maluti</div>
+                                <div class="upgrade-price">R30 000</div>
+                            </div>
+                        </div>
+                        <div class="upgrade-checkbox checked"></div>
+                    </div>
+                    
+                    <div class="upgrade-option" data-price="35500">
+                        <div class="upgrade-info">
+                            <img src="/assets/Fantasy-mat-small-img.png" alt="Fantasy-mat-small-img" />
+                            <div class="upgrade-details">
+                                <div class="upgrade-name">Fantasy-Matt</div>
+                                <div class="upgrade-price">R35 500</div>
+                            </div>
+                        </div>
+                        <div class="upgrade-checkbox"></div>
+                    </div>
+                    
+                    <div class="upgrade-option" data-price="25500">
+                        <div class="upgrade-info"> 
+                            <img src="/assets/Pine-rs-gold.png" alt="Pine-rs-gold-coffin-img" />
+                            <div class="upgrade-details">
+                                <div class="upgrade-name">Pine/RS Gold</div>
+                                <div class="upgrade-price">R25 500</div>
+                            </div>
+                        </div>
+                        <div class="upgrade-checkbox"></div>
+                    </div>
+                    
+                    <div class="upgrade-option" data-price="26500">
+                        <div class="upgrade-info">
+                            <img src="/assets/1-4 VIEW TEAR.png" alt="1/4 view img" />
+                            <div class="upgrade-details">
+                                <div class="upgrade-name">1/4 View Tear</div>
+                                <div class="upgrade-price">R26 500</div>
+                            </div>
+                        </div>
+                        <div class="upgrade-checkbox"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+                </div>
+               
+                
+            </div>
+
+         
+
     <!-- Footer Navigation -->
     <div class="footer-nav">
         <button class="back-btn">
@@ -645,13 +719,42 @@
     </div>
 
     <script>
-        
+        let currentPrice = 30000;
 
-        // Other button handlers
-        document.querySelector('.Complete-btn').addEventListener('click', () => {
-            alert('Order completed successfully!');
+        // Handle upgrade package selection
+        document.querySelectorAll('.upgrade-option').forEach(option => {
+            option.addEventListener('click', () => {
+                // Uncheck all checkboxes
+                document.querySelectorAll('.upgrade-checkbox').forEach(checkbox => {
+                    checkbox.classList.remove('checked');
+                });
+                
+                // Check the clicked option
+                const checkbox = option.querySelector('.upgrade-checkbox');
+                checkbox.classList.add('checked');
+                
+                // Update price
+                const newPrice = parseInt(option.dataset.price);
+                currentPrice = newPrice;
+                
+                // Update price displays
+                document.querySelector('.product-price').textContent = `R${newPrice.toLocaleString()}`;
+                document.querySelector('.order-total-value').textContent = `R${newPrice.toLocaleString()}`;
+                
+                // Update product name
+                const productName = option.querySelector('.upgrade-name').textContent;
+                document.querySelector('.product-name').textContent = productName;
+            });
         });
 
+        // Other button handlers
+        document.querySelector('.customize-btn').addEventListener('click', () => {
+            alert('Opening customization options');
+        });
+
+        document.querySelector('.checkout-btn').addEventListener('click', () => {
+            alert('Proceeding to checkout');
+        });
 
         document.querySelector('.back-btn').addEventListener('click', () => {
             alert('Going back to package selection');
@@ -661,7 +764,9 @@
             alert('Saving current selection');
         });
 
-        
+        document.querySelector('.quick-create').addEventListener('click', () => {
+            alert('Opening Quick Create');
+        });
     </script>
 </body>
 </html>
