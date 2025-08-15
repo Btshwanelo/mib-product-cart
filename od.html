@@ -493,11 +493,11 @@
   </head>
   <body>
     <!-- Header -->
-    <div class="header">
-    <div class="">
-        <h1 id="burial-header">Burial Planning</h1>
+     <div class="header">
+        <div class="">
+            <h1>Burial Planning of: James Bond (B029384)</h1>
+        </div>
     </div>
-</div>
 
     <!-- Progress Steps -->
     <div class="progress-container">
@@ -561,65 +561,8 @@
       const API_BASE_URL = "https://fff.sandbox.api.ezra360.com/api/v1.0";
       const API_KEY = "TPiNa.aoAj0IkST3vQlyM9BRPiKphXmXSIxinKB8mPXSbnx5U";
 
-     // Global variables
-let allPackages = [];
-let urlParams = {}; // Add this line
-
-// Function to extract URL parameters
-function getUrlParameters() {
-  const urlSearchParams = new URLSearchParams(window.location.search);
-  const params = {};
-  
-  for (const [key, value] of urlSearchParams) {
-    params[key] = decodeURIComponent(value);
-  }
-  
-  return params;
-}
-
-// Function to extract burial ID and name from title parameter
-function parseTitle(title) {
-  if (!title) return { burialId: '', name: '' };
-  
-  // Expected format: "B001665 - Thabiso Zungu"
-  const parts = title.split(' - ');
-  if (parts.length >= 2) {
-    return {
-      burialId: parts[0].trim(),
-      name: parts.slice(1).join(' - ').trim() // Join back in case there are multiple dashes
-    };
-  }
-  
-  // Fallback: if format is different, try to extract what we can
-  return {
-    burialId: parts[0] || '',
-    name: title
-  };
-}
-
-// Function to update the header with extracted information
-function updateHeader() {
-  urlParams = getUrlParameters();
-  const headerElement = document.getElementById('burial-header');
-  
-  if (urlParams.title) {
-    const { burialId, name } = parseTitle(urlParams.title);
-    
-    if (name && burialId) {
-      headerElement.textContent = `Burial Planning of: ${name} (${burialId})`;
-    } else if (urlParams.title) {
-      headerElement.textContent = `Burial Planning of: ${urlParams.title}`;
-    }
-  } else if (urlParams.burialId) {
-    // Fallback: if burialId is passed as separate parameter
-    const name = urlParams.name || 'Unknown';
-    headerElement.textContent = `Burial Planning of: ${name} (${urlParams.burialId})`;
-  }
-  
-  // Log extracted parameters for debugging
-  console.log('Extracted URL Parameters:', urlParams);
-  console.log('Parsed title:', urlParams.title ? parseTitle(urlParams.title) : 'No title parameter');
-}
+      // Global variables
+      let allPackages = [];
 
       // Fetch packages from API
       async function fetchPackages() {
@@ -797,17 +740,14 @@ function updateHeader() {
       }
 
       // Initialize the page
-     async function initializePage() {
-  // First update the header with URL parameters
-  updateHeader();
-  
-  try {
-    allPackages = await fetchPackages();
-    renderPackages(allPackages);
-  } catch (error) {
-    showError('Failed to load packages. Please try again later.');
-  }
-}
+      async function initializePage() {
+        try {
+          allPackages = await fetchPackages();
+          renderPackages(allPackages);
+        } catch (error) {
+          showError('Failed to load packages. Please try again later.');
+        }
+      }
 
       // Footer navigation
       document.querySelector(".back-btn").addEventListener("click", () => {

@@ -603,19 +603,19 @@
         <div class="progress-steps">
             <div class="step">
                 <div class="step-icon">
-                    <img src="/assets/package.png" width="24" height="24" alt="Package Icon" />
+                    <img src="/WebResource?id=package" width="24" height="24" alt="Package Icon" />
                 </div>
                 <div class="step-label">Choose Package</div>
             </div>
             <div class="step active">
                 <div class="step-icon">
-                    <img src="/assets/shopping-bag-03.png" width="24" height="24" alt="Package Icon" />
+                    <img src="/WebResource?id=shopping-bag-03" width="24" height="24" alt="Package Icon" />
                 </div>
                 <div class="step-label">Cart & Customization</div>
             </div>
             <div class="step">
                 <div class="step-icon">
-                    <img src="/assets/file-check-02.png" width="24" height="24" alt="Package Icon" />
+                    <img src="/WebResource?id=file-check-02" width="24" height="24" alt="Package Icon" />
                 </div>
                 <div class="step-label">Invoice</div>
             </div>
@@ -967,7 +967,7 @@ function updateHeader() {
                 };
                 sessionStorage.setItem('selectedPackage', JSON.stringify(selectedPackage));
             }
-            window.location.href = '/v3/extras.html';
+            window.location.href = '/WebResource?id=extras';
         });
 
         document.querySelector('.checkout-btn').addEventListener('click', () => {
@@ -981,12 +981,12 @@ function updateHeader() {
                 };
                 sessionStorage.setItem('selectedPackage', JSON.stringify(selectedPackage));
             }
-            window.location.href = '/v3/invoice.html';
+            window.location.href = '/WebResource?id=invoice';
         });
 
         document.querySelector('.back-btn').addEventListener('click', () => {
             // Go back to package selection
-            window.location.href = '/v3/products.html';
+            window.location.href = '/WebResource?id=products';
         });
 
         document.querySelector('.save-btn').addEventListener('click', () => {
@@ -998,7 +998,7 @@ function updateHeader() {
                     timestamp: Date.now()
                 };
                 sessionStorage.setItem('selectedPackage', JSON.stringify(selectedPackage));
-                alert('Selection saved successfully!');
+                // alert('Selection saved successfully!');
             }
         });
 

@@ -445,19 +445,19 @@
         <div class="progress-steps">
             <div class="step">
                 <div class="step-icon">
-                    <img src="/assets/package.png" width="24" height="24" alt="Package Icon" />
+                    <img src="/WebResource?id=package" width="24" height="24" alt="Package Icon" />
                 </div>
                 <div class="step-label">Choose Package</div>
             </div>
             <div class="step">
                 <div class="step-icon">
-                    <img src="/assets/shopping-bag-03.png" width="24" height="24" alt="Package Icon" />
+                    <img src="/WebResource?id=shopping-bag-03" width="24" height="24" alt="Package Icon" />
                 </div>
                 <div class="step-label">Cart & Customization</div>
             </div>
             <div class="step active">
                 <div class="step-icon">
-                    <img src="/assets/file-check-02.png" width="24" height="24" alt="Package Icon" />
+                    <img src="/WebResource?id=file-check-02" width="24" height="24" alt="Package Icon" />
                 </div>
                 <div class="step-label">Invoice</div>
             </div>
@@ -858,7 +858,7 @@ function updateHeader() {
                     sessionStorage.removeItem('selectedPackage');
                                         
                     // Route to success page or back to start
-                    window.location.href = '/v3/success.html';
+                    window.location.href = '/WebResource?id=success';
                 } else {
                     throw new Error(result.clientMessage || 'Failed to submit order');
                 }
@@ -920,7 +920,7 @@ function updateHeader() {
         document.getElementById('complete-order-btn').addEventListener('click', submitOrder);
 
         document.querySelector('.back-btn').addEventListener('click', () => {
-            window.location.href = '/v3/cart.html'; // Navigate back to cart page
+            window.location.href = '/WebResource?id=cart'; // Navigate back to cart page
         });
 
         document.querySelector('.save-btn').addEventListener('click', () => {
