@@ -300,7 +300,7 @@
     <div class="header">
         <div class="logo">
             <div class="logo-icon">
-                <img src="/assets/mib-ezra-logo.png" alt="Logo" width="24" height="24">
+                <img src="/WebResource?id=mib-ezra-logo" alt="Logo" width="24" height="24">
             </div>
             <span>Ezra</span>
         </div>
@@ -326,13 +326,11 @@
 
     <script>
         function goToHome() {
-            alert('Redirecting to home page');
             // In a real application, this would navigate to the home page
-            // window.location.href = '/V3/products.html';
+            window.location.href = '/WebResource?id=products';
         }
 
         document.querySelector('.quick-create').addEventListener('click', () => {
-            alert('Opening Quick Create');
         });
     </script>
 </body>

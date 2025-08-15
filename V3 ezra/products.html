@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Choose Package</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background-color: #f9fafb;
+        color: #333;
+      }
+
+      /* Header */
+      .header {
+        background: #0ba5ec;
+        color: white;
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        font-size: 16px;
+      }
+
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .search-container {
+        flex: 1;
+        max-width: 400px;
+        margin: 0 24px;
+        position: relative;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 10px 40px 10px 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        background: white;
+        outline: none;
+      }
+
+      .search-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .quick-create {
+        background: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: black;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .user-avatar {
+        width: 32px;
+        height: 32px;
+        background: white;
+        border-radius: 50%;
+        color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      /* Progress Steps */
+      .progress-container {
+        background: white;
+        padding: 24px;
+        border-bottom: 1px solid #e5e7eb;
+        max-width: 1280px;
+        margin: 10px auto;
+        border-radius: 16px;
+      }
+
+      .progress-steps {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        flex: 1;
+        position: relative;
+      }
+
+      .step:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        top: 24px;
+        right: -50%;
+        width: 100%;
+        height: 2px;
+        background: #e5e7eb;
+        z-index: 1;
+      }
+
+      .step-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 2;
+        font-size: 20px;
+        color: #9ca3af;
+        border: 1px solid #e4e7ec;
+      }
+
+      .step-label {
+        font-size: 14px;
+        color: #6b7280;
+        font-weight: 500;
+      }
+
+      .step.active .step-label {
+        color: #344054;
+      }
+
+      /* Main Content */
+      .main-content {
+        background: white;
+        padding: 32px 24px;
+        min-height: calc(100vh - 200px);
+        max-width: 1280px;
+        margin: 10px auto;
+        border-radius: 16px;
+      }
+
+      .content-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .page-title {
+        font-size: 30px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+      }
+
+      .page-subtitle {
+        font-size: 18px;
+        color: #1a1a1a;
+        font-weight: 400;
+        margin-bottom: 48px;
+      }
+
+      /* Package Grid */
+      .packages-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+        margin: 0 auto;
+      }
+
+      .package-card {
+        background: white;
+        border: 1px solid #e4e7ec;
+        border-radius: 12px;
+        padding: 24px;
+        text-align: center;
+        transition: all 0.2s ease;
+        cursor: pointer;
+      }
+
+      .package-card:hover {
+        border-color: #1e9cfa;
+        box-shadow: 0 4px 12px rgba(30, 156, 250, 0.15);
+      }
+
+      .package-image {
+        margin: 0 auto 24px;
+        background: #f4f4f4;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        width: 210px;
+        height: 210px;
+      }
+
+      .package-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 8px;
+      }
+
+      .package-image-placeholder {
+        width: 100%;
+        height: 100%;
+        background: #f3f4f6;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #9ca3af;
+        font-size: 16px;
+        text-align: center;
+      }
+
+      .package-name {
+        font-size: 20px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 8px;
+        justify-self: left;
+      }
+
+      .package-price {
+        font-size: 18px;
+        color: #6b7280;
+        margin-bottom: 20px;
+        justify-self: left;
+      }
+
+      .proceed-btn {
+        background: #0086c9;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom: 12px;
+        transition: background 0.2s ease;
+      }
+
+      .proceed-btn:hover {
+        background: #0284c7;
+      }
+
+      .view-benefits {
+        background: none;
+        border: none;
+        color: #475467;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        width: 100%;
+        padding: 8px;
+      }
+
+      /* Footer Navigation */
+      .footer-nav {
+        background: white;
+        padding: 16px 24px;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1280px;
+        margin: 10px auto;
+        border-radius: 16px;
+      }
+
+      .back-btn {
+        background: none;
+        border: none;
+        color: #6b7280;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+      }
+
+      .save-btn {
+        background: #f3f4f6;
+        border: none;
+        color: #6b7280;
+        font-size: 14px;
+        padding: 8px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .header {
+          padding: 12px 16px;
+        }
+
+        .search-container {
+          margin: 0 16px;
+          max-width: none;
+        }
+
+        .progress-container {
+          padding: 16px;
+        }
+
+        .progress-steps {
+          gap: 16px;
+        }
+
+        .step-icon {
+          width: 40px;
+          height: 40px;
+        }
+
+        .step-label {
+          font-size: 12px;
+        }
+
+        .main-content {
+          padding: 24px 16px;
+        }
+
+        .page-title {
+          font-size: 24px;
+        }
+
+        .packages-grid {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+
+        .package-card {
+          padding: 20px;
+        }
+
+        .package-image {
+          width: 150px;
+          height: 100px;
+        }
+
+        .footer-nav {
+          padding: 16px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header-actions .quick-create span {
+          display: none;
+        }
+
+        .search-input {
+          font-size: 16px; /* Prevents zoom on iOS */
+        }
+
+        .page-subtitle {
+          margin-bottom: 32px;
+        }
+
+        .package-image {
+          width: 120px;
+          height: 80px;
+        }
+
+        .proceed-btn {
+          padding: 14px 24px;
+          font-size: 16px;
+          background-color: #0086c9;
+        }
+      }
+
+      .benefits-section {
+        display: none;
+        padding: 20px 0 0 0;
+        border-top: 1px solid #e4e7ec;
+        margin-top: 20px;
+      }
+
+      .benefits-section.expanded {
+        display: block;
+      }
+
+      .benefits-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 16px;
+        text-align: left;
+      }
+
+      .benefits-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .benefit-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 0;
+        font-size: 14px;
+        color: #475467;
+        text-align: left;
+      }
+
+      .benefit-icon {
+        width: 16px;
+        height: 16px;
+        border: 1px solid #0086c9;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .benefit-icon::after {
+        content: "✓";
+        color: #0086c9;
+        font-size: 10px;
+        font-weight: bold;
+      }
+
+      .view-benefits {
+        transition: transform 0.2s ease;
+      }
+
+      /* Loading state */
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        color: #6b7280;
+      }
+
+      /* Error state */
+      .error {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        color: #dc2626;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">
+        <div class="logo-icon">
+          <img src="/WebResource?id=mib-ezra-logo" alt="Logo" width="24" height="24" />
+        </div>
+        <span>Ezra</span>
+      </div>
+      <div class="search-container">
+        <!-- <input type="text" class="search-input" placeholder="Search for a page">
+            <div class="search-icon"></div> -->
+      </div>
+      <div class="header-actions">
+        <!-- <button class="quick-create">
+                <span>Quick Create</span>
+            </button> -->
+        <div class="user-avatar">MM</div>
+      </div>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="progress-container">
+      <div class="progress-steps">
+        <div class="step active">
+          <div class="step-icon">
+            <img
+              src="/WebResource?id=package"
+              width="24"
+              height="24"
+              alt="Package Icon"
+            />
+          </div>
+          <div class="step-label">Choose Package</div>
+        </div>
+        <div class="step">
+          <div class="step-icon">
+            <img
+              src="/WebResource?id=shopping-bag-03"
+              width="24"
+              height="24"
+              alt="Package Icon"
+            />
+          </div>
+          <div class="step-label">Cart & Customization</div>
+        </div>
+        <div class="step">
+          <div class="step-icon">
+            <img
+              src="/WebResource?id=file-check-02"
+              width="24"
+              height="24"
+              alt="Package Icon"
+            />
+          </div>
+          <div class="step-label">Invoice</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="content-wrapper">
+        <h1 class="page-title">Choose your package</h1>
+        <p class="page-subtitle">Select your package from the list below.</p>
+
+        <div id="packages-container">
+          <div class="loading">Loading packages...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Navigation -->
+    <div class="footer-nav">
+      <button class="back-btn">← Back</button>
+      <button class="save-btn">Save</button>
+    </div>
+
+    <script>
+      // API Configuration
+      const API_BASE_URL = "https://fff.sandbox.api.ezra360.com/api/v1.0";
+      const API_KEY = "TPiNa.aoAj0IkST3vQlyM9BRPiKphXmXSIxinKB8mPXSbnx5U";
+
+      // Global variables
+      let allPackages = [];
+
+      // Fetch packages from API
+      async function fetchPackages() {
+        try {
+          const myHeaders = new Headers();
+          myHeaders.append("api-key", API_KEY);
+          myHeaders.append("Content-Type", "application/json");
+
+          const raw = JSON.stringify({
+            "entityName": "ProductGroup",
+            "requestName": "ProductGroupListingExecuteRequest"
+          });
+
+          const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+          };
+
+          const response = await fetch(`${API_BASE_URL}/entities/ExecuteRequest`, requestOptions);
+          const result = await response.json();
+
+          if (result.isSuccess && result.outputParameters && result.outputParameters.ProductGroupData) {
+            return result.outputParameters.ProductGroupData;
+          } else {
+            throw new Error('Failed to fetch packages');
+          }
+        } catch (error) {
+          console.error('Error fetching packages:', error);
+          throw error;
+        }
+      }
+
+      // Format price for display
+      function formatPrice(price) {
+        if (price === 0 || price === 0.0) {
+          return 'Contact for Price';
+        }
+        return `R${price.toLocaleString()}`;
+      }
+
+      // Parse benefits string into array
+      function parseBenefits(benefitsString) {
+        if (!benefitsString) return [];
+        return benefitsString.split(',').map(benefit => benefit.trim()).filter(benefit => benefit.length > 0);
+      }
+
+      // Create package card HTML
+      function createPackageCard(packageData, index) {
+        const benefits = parseBenefits(packageData.benefits);
+        const hasImage = packageData.url && packageData.url.trim() !== '';
+        
+        return `
+          <div class="package-card" data-package-id="${packageData.productGroupId}">
+            <div class="package-image">
+              ${hasImage ? 
+                `<img
+                  src="${packageData.url}"
+                  alt="${packageData.productGroupName}"
+                  onerror="this.parentElement.innerHTML='<div class=&quot;package-image-placeholder&quot;>No Image Available</div>'"
+                />` :
+                `<div class="package-image-placeholder">No Image Available</div>`
+              }
+            </div>
+            <h3 class="package-name">${packageData.productGroupName}</h3>
+            <p class="package-price">${formatPrice(packageData.price)}</p>
+            <button class="proceed-btn" data-package-id="${packageData.productGroupId}">Proceed to cart</button>
+            ${benefits.length > 0 ? `
+              <button class="view-benefits" data-package="package-${index}">
+                View Benefits
+              </button>
+              <div class="benefits-section" id="benefits-package-${index}">
+                <h4 class="benefits-title">Benefits</h4>
+                <ul class="benefits-list">
+                  ${benefits.map(benefit => `
+                    <li class="benefit-item">
+                      <div class="benefit-icon"></div>
+                      <span>${benefit}</span>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      // Render packages
+      function renderPackages(packages) {
+        const container = document.getElementById('packages-container');
+        
+        if (!packages || packages.length === 0) {
+          container.innerHTML = '<div class="error">No packages available</div>';
+          return;
+        }
+
+        const packagesGrid = `
+          <div class="packages-grid">
+            ${packages.map((packageData, index) => createPackageCard(packageData, index)).join('')}
+          </div>
+        `;
+        
+        container.innerHTML = packagesGrid;
+        attachEventListeners();
+      }
+
+      // Show error state
+      function showError(message) {
+        const container = document.getElementById('packages-container');
+        container.innerHTML = `<div class="error">${message}</div>`;
+      }
+
+      // Find package by ID
+      function findPackageById(packageId) {
+        return allPackages.find(pkg => pkg.productGroupId === packageId);
+      }
+
+      // Attach event listeners to dynamic content
+      function attachEventListeners() {
+        // Proceed to cart buttons
+        document.querySelectorAll(".proceed-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const packageId = btn.getAttribute("data-package-id");
+            const packageData = findPackageById(packageId);
+            
+            if (!packageData) {
+              alert('Package not found. Please try again.');
+              return;
+            }
+            
+            // Store selected package info in session storage for the cart page
+            const selectedPackage = {
+              id: packageId,
+              name: packageData.productGroupName,
+              price: packageData.price,
+              benefits: packageData.benefits,
+              timestamp: Date.now()
+            };
+            sessionStorage.setItem('selectedPackage', JSON.stringify(selectedPackage));
+            
+            // Route to cart page
+            window.location.href = '/WebResource?id=cart';
+          });
+        });
+
+        // View benefits buttons
+        document.querySelectorAll(".view-benefits").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const packageType = btn.getAttribute("data-package");
+            const benefitsSection = document.getElementById(`benefits-${packageType}`);
+            
+            if (!benefitsSection) return;
+
+            if (benefitsSection.classList.contains("expanded")) {
+              benefitsSection.classList.remove("expanded");
+              btn.classList.remove("expanded");
+            } else {
+              // Close all other expanded sections
+              document.querySelectorAll(".benefits-section.expanded").forEach((section) => {
+                section.classList.remove("expanded");
+              });
+              document.querySelectorAll(".view-benefits.expanded").forEach((button) => {
+                button.classList.remove("expanded");
+              });
+
+              // Open clicked section
+              benefitsSection.classList.add("expanded");
+              btn.classList.add("expanded");
+            }
+          });
+        });
+      }
+
+      // Initialize the page
+      async function initializePage() {
+        try {
+          allPackages = await fetchPackages();
+          renderPackages(allPackages);
+        } catch (error) {
+          showError('Failed to load packages. Please try again later.');
+        }
+      }
+
+      // Footer navigation
+      document.querySelector(".back-btn").addEventListener("click", () => {
+        // Navigate back to previous page
+        window.history.back();
+      });
+
+      document.querySelector(".save-btn").addEventListener("click", () => {
+        // Save current state if needed
+        alert("Current packages loaded successfully");
+      });
+
+      // Start the application
+      document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+  </body>
+</html>
