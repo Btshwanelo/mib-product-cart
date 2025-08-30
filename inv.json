@@ -1,0 +1,39 @@
+{
+  "entityName": "Burial",//
+  "requestName": "FecthingProductData",//
+  "inputParamters": {
+    "ProductData": {
+      "BurialId": "14e71ef8-cbc6-425b-8c78-16ddb5c78543",
+      "ProductGroupData": [
+        {
+          "productGroupId": "f2a1bcdc-7bd9-4e90-97a3-d5de361aa220",
+          "productGroupName": "TM1-BP",
+          "price": 30000
+        }
+      ],
+      "ProductData": [
+        {
+          "name": "Flowers",
+          "costPrice": 1000,
+          "Quantity": 2
+        },
+        {
+          "name": "Grave Make",
+          "costPrice": 1050,
+          "Quantity": 1
+        }
+      ],
+      "BenefitData": [
+        {
+          "BenefitName": "Grave"
+        },
+        {
+          "BenefitName": "Vehicle"
+        },
+        {
+          "BenefitName": "COFFIN"
+        }
+      ]
+    }
+  }
+}

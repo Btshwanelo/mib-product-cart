@@ -98,3 +98,4 @@ class AppState {
 
 // Create global appState instance
 const appState = new AppState();
+

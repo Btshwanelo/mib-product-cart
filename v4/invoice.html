@@ -17,15 +17,18 @@
             color: #333;
         }
 
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #1e9cfa 0%, #0ea5e9 100%);
-            color: white;
+       .header {
+            background: #fff;
+            color: black;
             padding: 12px 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 20px;
         }
 
         .logo {
@@ -357,22 +360,20 @@
             border-radius: 16px;
         }
 
-        .back-btn {
-            background: none;
+         .back-btn {
+           background: #0086C9;
             border: none;
-            color: #6b7280;
+            color: white;
             font-size: 14px;
+            padding: 8px 24px;
+            border-radius: 6px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
         }
 
         .save-btn {
-            background: #f3f4f6;
+            background: #0086C9;
             border: none;
-            color: #6b7280;
+            color: white;
             font-size: 14px;
             padding: 8px 24px;
             border-radius: 6px;
@@ -519,8 +520,8 @@
 
     <script>
         // API Configuration
-        const API_BASE_URL = "https://fff.sandbox.api.ezra360.com/api/v1.0";
-        const API_KEY = "TPiNa.aoAj0IkST3vQlyM9BRPiKphXmXSIxinKB8mPXSbnx5U";
+        const API_BASE_URL = "https://mib.sandbox.api.ezra360.com/api/v1.0";
+        const API_KEY = "1bcTCI.pWzRtox0PIXllAvT0hrPd0Sz32FvlhBIxBKgouivzfx";
 
         // Global variables
 let orderData = null;
@@ -530,15 +531,72 @@ let urlParams = {}; // Add this line
 
 // Function to extract URL parameters
 function getUrlParameters() {
-    const urlSearchParams = new URLSearchParams(window.location.search);
     const params = {};
+    let currentUrl = window.location.href;
     
-    for (const [key, value] of urlSearchParams) {
-        params[key] = decodeURIComponent(value);
+    // Try to get the parent URL if we're in an iframe/nested context
+    try {
+        if (window.parent && window.parent !== window && window.parent.location) {
+            currentUrl = window.parent.location.href;
+        }
+    } catch (e) {
+        // Cross-origin restriction - try alternative methods
+        console.log('Cannot access parent URL due to cross-origin restrictions');
+    }
+    
+    // Alternative: Check if referrer contains our parameters
+    if (document.referrer && document.referrer.includes('title=')) {
+        currentUrl = document.referrer;
+    }
+    
+    // Debug logging
+    console.log('Current page URL:', window.location.href);
+    console.log('Parent/Referrer URL:', currentUrl);
+    console.log('Document referrer:', document.referrer);
+    
+    try {
+        // Method 1: Parse current page parameters
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        for (const [key, value] of urlSearchParams) {
+            params[key] = decodeURIComponent(value);
+        }
+        
+        // Method 2: Parse from the full URL (parent or referrer)
+        const titleMatch = currentUrl.match(/[?&]title=([^&]+)/);
+        const burialIdMatch = currentUrl.match(/[?&]burialId=([^&]+)/);
+        
+        if (titleMatch) {
+            try {
+                params.title = decodeURIComponent(titleMatch[1]);
+            } catch (e) {
+                params.title = titleMatch[1];
+            }
+        }
+        
+        if (burialIdMatch) {
+            try {
+                params.burialId = decodeURIComponent(burialIdMatch[1]);
+            } catch (e) {
+                params.burialId = burialIdMatch[1];
+            }
+        }
+        
+        // Method 3: Try to parse from hash if parameters are there
+        if (window.location.hash) {
+            const hashParams = window.location.hash.substring(1);
+            const hashUrlParams = new URLSearchParams(hashParams);
+            for (const [key, value] of hashUrlParams) {
+                params[key] = decodeURIComponent(value);
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error parsing URL parameters:', error);
     }
     
     return params;
 }
+
 
 // Function to extract burial ID and name from title parameter
 function parseTitle(title) {
@@ -690,51 +748,53 @@ function updateHeader() {
             renderBenefits();
         }
 
-        // Render extras section
-        function renderExtras() {
-            const extrasList = document.getElementById('extras-list');
-            const extrasSection = document.getElementById('extras-section');
+       // Also need to update the renderExtras function to handle the name-based extras correctly
+function renderExtras() {
+    const extrasList = document.getElementById('extras-list');
+    const extrasSection = document.getElementById('extras-section');
 
-            if (!orderData.extras || Object.keys(orderData.extras).length === 0) {
-                extrasSection.style.display = 'none';
-                return;
+    if (!orderData.extras || Object.keys(orderData.extras).length === 0) {
+        extrasSection.style.display = 'none';
+        return;
+    }
+
+    let extrasHTML = '';
+    let hasExtras = false;
+
+    Object.keys(orderData.extras).forEach(extraName => {
+        const quantity = orderData.extras[extraName];
+        if (quantity > 0) {
+            hasExtras = true;
+            
+            // Try to find product details from API data by name
+            const productDetails = allProductsData.find(product => 
+                product.productGroupName === extraName
+            );
+            
+            const displayName = quantity > 1 ? `${extraName} (${quantity}x)` : extraName;
+            
+            // Calculate price if available
+            let priceDisplay = 'Contact for Price';
+            if (productDetails && productDetails.price > 0) {
+                const totalPrice = productDetails.price * quantity;
+                priceDisplay = formatPrice(totalPrice);
             }
-
-            let extrasHTML = '';
-            let hasExtras = false;
-
-            Object.keys(orderData.extras).forEach(extraId => {
-                const quantity = orderData.extras[extraId];
-                if (quantity > 0) {
-                    hasExtras = true;
-                    // Try to find product details from API data
-                    const productDetails = findProductById(extraId);
-                    const extraName = productDetails ? productDetails.productGroupName : `Extra Item ${extraId}`;
-                    const displayName = quantity > 1 ? `${extraName} (${quantity}x)` : extraName;
-                    
-                    // Calculate price if available
-                    let priceDisplay = 'Included';
-                    if (productDetails && productDetails.price > 0) {
-                        const totalPrice = productDetails.price * quantity;
-                        priceDisplay = formatPrice(totalPrice);
-                    }
-                    
-                    extrasHTML += `
-                        <li class="extras-item">
-                            <span class="extras-item-name">${displayName}</span>
-                            <span class="extras-item-price">${priceDisplay}</span>
-                        </li>
-                    `;
-                }
-            });
-
-            if (!hasExtras) {
-                extrasSection.style.display = 'none';
-            } else {
-                extrasList.innerHTML = extrasHTML;
-            }
+            
+            extrasHTML += `
+                <li class="extras-item">
+                    <span class="extras-item-name">${displayName}</span>
+                    <span class="extras-item-price">${priceDisplay}</span>
+                </li>
+            `;
         }
+    });
 
+    if (!hasExtras) {
+        extrasSection.style.display = 'none';
+    } else {
+        extrasList.innerHTML = extrasHTML;
+    }
+}
         // Render benefits section
         function renderBenefits() {
             const benefitsList = document.getElementById('benefits-list');
@@ -773,106 +833,110 @@ function updateHeader() {
             benefitsList.innerHTML = benefitsHTML;
         }
 
-        // Submit order to API
-        async function submitOrder() {
-            try {
-                const completeBtn = document.getElementById('complete-order-btn');
-                completeBtn.disabled = true;
-                completeBtn.textContent = 'Submitting...';
+       // Submit order to API
+async function submitOrder() {
+    try {
+        const completeBtn = document.getElementById('complete-order-btn');
+        completeBtn.disabled = true;
+        completeBtn.textContent = 'Submitting...';
 
-                // Prepare ProductGroupData
-                const productGroupData = [{
-                    productGroupId: selectedPackageData?.id || "default-package-id",
-                    productGroupName: orderData.basePackage.name,
-                    price: orderData.basePackage.price || 0
-                }];
+        // Extract burial ID from URL parameters
+        const burialId = urlParams.burialId || "default-burial-id"; // Fallback if not found
 
-                // Prepare ProductData (extras)
-                const productData = [];
-                if (orderData.extras) {
-                    Object.keys(orderData.extras).forEach(extraId => {
-                        const quantity = orderData.extras[extraId];
-                        if (quantity > 0) {
-                            const productDetails = findProductById(extraId);
-                            productData.push({
-                                productGroupId: extraId,
-                                name: productDetails ? productDetails.productGroupName : `Extra ${extraId}`,
-                                costPrice: productDetails ? productDetails.price : 0,
-                                Quantity: quantity
-                            });
-                        }
-                    });
-                }
+        // Prepare ProductGroupData using selectedPackageData
+        const productGroupData = [{
+            productGroupId: selectedPackageData?.productGroupId || "default-package-id",
+            productGroupName: selectedPackageData?.productGroupName || orderData.basePackage.name,
+            price: selectedPackageData?.price || orderData.basePackage.price || 0
+        }];
 
-                // Prepare BenefitData
-                const benefitData = [];
-                if (selectedPackageData) {
-                    let benefits = [];
-                    if (selectedPackageData.benefits) {
-                        benefits = parseBenefits(selectedPackageData.benefits);
-                    } else {
-                        const packageDetails = findProductById(selectedPackageData.id);
-                        if (packageDetails && packageDetails.benefits) {
-                            benefits = parseBenefits(packageDetails.benefits);
-                        }
-                    }
+        // Prepare ProductData (extras) using orderData.extras
+        const productData = [];
+        if (orderData.extras) {
+            Object.keys(orderData.extras).forEach(extraName => {
+                const quantity = orderData.extras[extraName];
+                if (quantity > 0) {
+                    // Try to find product details from API data by name
+                    const productDetails = allProductsData.find(product => 
+                        product.productGroupName === extraName
+                    );
                     
-                    benefits.forEach(benefit => {
-                        benefitData.push({
-                            BenefitName: benefit
-                        });
+                    productData.push({
+                        name: extraName,
+                        costPrice: productDetails ? productDetails.price : 0,
+                        Quantity: quantity
                     });
                 }
-
-                const myHeaders = new Headers();
-                myHeaders.append("api-key", API_KEY);
-                myHeaders.append("Content-Type", "application/json");
-
-                const raw = JSON.stringify({
-                    "entityName": "Burial",
-                    "requestName": "FecthingProductData",
-                    "RecordId": "41822ddd-155b-4470-9aed-dddf5219c6d5",
-                    "inputParamters": {
-                        "ProductData": {
-                            "ProductGroupData": productGroupData,
-                            "ProductData": productData,
-                            "BenefitData": benefitData,
-                            "TotalAmount": orderData.total || 0
-                        }
-                    }
-                });
-
-                const requestOptions = {
-                    method: "POST",
-                    headers: myHeaders,
-                    body: raw,
-                    redirect: "follow"
-                };
-
-                const response = await fetch(`${API_BASE_URL}/entities/ExecuteRequest`, requestOptions);
-                const result = await response.json();
-
-                if (result.isSuccess) {
-                    // Clear session storage
-                    sessionStorage.removeItem('orderData');
-                    sessionStorage.removeItem('selectedPackage');
-                                        
-                    // Route to success page or back to start
-                    window.location.href = '/WebResource?id=success';
-                } else {
-                    throw new Error(result.clientMessage || 'Failed to submit order');
-                }
-
-            } catch (error) {
-                console.error('Error submitting order:', error);
-                showError('Failed to submit order. Please try again.');
-                
-                const completeBtn = document.getElementById('complete-order-btn');
-                completeBtn.disabled = false;
-                completeBtn.textContent = 'Complete Order';
-            }
+            });
         }
 
+        // Prepare BenefitData using selectedPackageData.benefits
+        const benefitData = [];
+        if (selectedPackageData && selectedPackageData.benefits) {
+            const benefits = parseBenefits(selectedPackageData.benefits);
+            benefits.forEach(benefit => {
+                // Extract just the benefit name (remove quantities like ": 1")
+                const cleanBenefitName = benefit.split(':')[0].trim();
+                if (cleanBenefitName) {
+                    benefitData.push({
+                        BenefitName: cleanBenefitName
+                    });
+                }
+            });
+        }
+
+        const myHeaders = new Headers();
+        myHeaders.append("api-key", API_KEY);
+        myHeaders.append("Content-Type", "application/json");
+
+        const payload = {
+            "entityName": "Burial",
+            "requestName": "FecthingProductData",
+            "inputParamters": {
+                "ProductData": {
+                    "BurialId": burialId,
+                    "ProductGroupData": productGroupData,
+                    "ProductData": productData,
+                    "BenefitData": benefitData
+                }
+            }
+        };
+
+        // Log the payload for debugging
+        console.log('Submitting payload:', JSON.stringify(payload, null, 2));
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: JSON.stringify(payload),
+            redirect: "follow"
+        };
+
+        const response = await fetch(`${API_BASE_URL}/entities/ExecuteRequest`, requestOptions);
+        const result = await response.json();
+
+        console.log('API Response:', result);
+
+        if (result.isSuccess) {
+            // Clear session storage
+            sessionStorage.removeItem('orderData');
+            sessionStorage.removeItem('selectedPackage');
+                        
+            // Route to success page or back to start
+            window.location.href = '/WebResource?id=success';
+        } else {
+            throw new Error(result.clientMessage || 'Failed to submit order');
+        }
+
+    } catch (error) {
+        console.error('Error submitting order:', error);
+        showError('Failed to submit order. Please try again.');
+        
+        const completeBtn = document.getElementById('complete-order-btn');
+        completeBtn.disabled = false;
+        completeBtn.textContent = 'Complete Order';
+    }
+}
         // Show error message
         function showError(message) {
             const errorDiv = document.createElement('div');

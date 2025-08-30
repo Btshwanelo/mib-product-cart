@@ -20,14 +20,18 @@
 
       /* Header */
       .header {
-        background: #0ba5ec;
-        color: white;
+        background: #fff;
+        color: black;
         padding: 12px 24px;
         display: flex;
         align-items: center;
         justify-content: center;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
+
+       .header h1 {
+            font-size: 20px;
+        }
 
       .logo {
         display: flex;
@@ -313,15 +317,13 @@
       }
 
       .back-btn {
-        background: none;
-        border: none;
-        color: #6b7280;
-        font-size: 14px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
+            background: #f3f4f6;
+    border: none;
+    color: #6b7280;
+    font-size: 14px;
+    padding: 8px 24px;
+    border-radius: 6px;
+    cursor: not-allowed;
       }
 
       .save-btn {
@@ -331,7 +333,7 @@
         font-size: 14px;
         padding: 8px 24px;
         border-radius: 6px;
-        cursor: pointer;
+        cursor: not-allowed;
       }
 
       /* Responsive Design */
@@ -558,8 +560,8 @@
 
     <script>
       // API Configuration
-      const API_BASE_URL = "https://fff.sandbox.api.ezra360.com/api/v1.0";
-      const API_KEY = "TPiNa.aoAj0IkST3vQlyM9BRPiKphXmXSIxinKB8mPXSbnx5U";
+      const API_BASE_URL = "https://mib.sandbox.api.ezra360.com/api/v1.0";
+      const API_KEY = "1bcTCI.pWzRtox0PIXllAvT0hrPd0Sz32FvlhBIxBKgouivzfx";
 
      // Global variables
 let allPackages = [];
@@ -567,14 +569,70 @@ let urlParams = {}; // Add this line
 
 // Function to extract URL parameters
 function getUrlParameters() {
-  const urlSearchParams = new URLSearchParams(window.location.search);
-  const params = {};
-  
-  for (const [key, value] of urlSearchParams) {
-    params[key] = decodeURIComponent(value);
-  }
-  
-  return params;
+    const params = {};
+    let currentUrl = window.location.href;
+    
+    // Try to get the parent URL if we're in an iframe/nested context
+    try {
+        if (window.parent && window.parent !== window && window.parent.location) {
+            currentUrl = window.parent.location.href;
+        }
+    } catch (e) {
+        // Cross-origin restriction - try alternative methods
+        console.log('Cannot access parent URL due to cross-origin restrictions');
+    }
+    
+    // Alternative: Check if referrer contains our parameters
+    if (document.referrer && document.referrer.includes('title=')) {
+        currentUrl = document.referrer;
+    }
+    
+    // Debug logging
+    console.log('Current page URL:', window.location.href);
+    console.log('Parent/Referrer URL:', currentUrl);
+    console.log('Document referrer:', document.referrer);
+    
+    try {
+        // Method 1: Parse current page parameters
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        for (const [key, value] of urlSearchParams) {
+            params[key] = decodeURIComponent(value);
+        }
+        
+        // Method 2: Parse from the full URL (parent or referrer)
+        const titleMatch = currentUrl.match(/[?&]title=([^&]+)/);
+        const burialIdMatch = currentUrl.match(/[?&]burialId=([^&]+)/);
+        
+        if (titleMatch) {
+            try {
+                params.title = decodeURIComponent(titleMatch[1]);
+            } catch (e) {
+                params.title = titleMatch[1];
+            }
+        }
+        
+        if (burialIdMatch) {
+            try {
+                params.burialId = decodeURIComponent(burialIdMatch[1]);
+            } catch (e) {
+                params.burialId = burialIdMatch[1];
+            }
+        }
+        
+        // Method 3: Try to parse from hash if parameters are there
+        if (window.location.hash) {
+            const hashParams = window.location.hash.substring(1);
+            const hashUrlParams = new URLSearchParams(hashParams);
+            for (const [key, value] of hashUrlParams) {
+                params[key] = decodeURIComponent(value);
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error parsing URL parameters:', error);
+    }
+    
+    return params;
 }
 
 // Function to extract burial ID and name from title parameter
@@ -754,12 +812,9 @@ function updateHeader() {
             
             // Store selected package info in session storage for the cart page
             const selectedPackage = {
-              id: packageId,
-              name: packageData.productGroupName,
-              price: packageData.price,
-              benefits: packageData.benefits,
-              timestamp: Date.now()
-            };
+        ...packageData,
+        timestamp: Date.now()
+    };
             sessionStorage.setItem('selectedPackage', JSON.stringify(selectedPackage));
             
             // Route to cart page

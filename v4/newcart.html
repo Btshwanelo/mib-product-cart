@@ -705,7 +705,7 @@ function getUrlParameters() {
         // Method 1: Parse current page parameters
         const urlSearchParams = new URLSearchParams(window.location.search);
         for (const [key, value] of urlSearchParams) {
-            params[key] = decodeURIComponent(value);
+            params[key] = properDecodeURIComponent(value);
         }
         
         // Method 2: Parse from the full URL (parent or referrer)
@@ -713,19 +713,11 @@ function getUrlParameters() {
         const burialIdMatch = currentUrl.match(/[?&]burialId=([^&]+)/);
         
         if (titleMatch) {
-            try {
-                params.title = decodeURIComponent(titleMatch[1]);
-            } catch (e) {
-                params.title = titleMatch[1];
-            }
+            params.title = properDecodeURIComponent(titleMatch[1]);
         }
         
         if (burialIdMatch) {
-            try {
-                params.burialId = decodeURIComponent(burialIdMatch[1]);
-            } catch (e) {
-                params.burialId = burialIdMatch[1];
-            }
+            params.burialId = properDecodeURIComponent(burialIdMatch[1]);
         }
         
         // Method 3: Try to parse from hash if parameters are there
@@ -733,7 +725,7 @@ function getUrlParameters() {
             const hashParams = window.location.hash.substring(1);
             const hashUrlParams = new URLSearchParams(hashParams);
             for (const [key, value] of hashUrlParams) {
-                params[key] = decodeURIComponent(value);
+                params[key] = properDecodeURIComponent(value);
             }
         }
         
@@ -744,13 +736,28 @@ function getUrlParameters() {
     return params;
 }
 
-
 // Function to extract burial ID and name from title parameter
 function parseTitle(title) {
     if (!title) return { burialId: '', name: '' };
     
-    // Expected format: "B001665 - Thabiso Zungu"
-    const parts = title.split(' - ');
+    // Clean the title first - remove any duplicate encoding issues
+    let cleanTitle = title;
+    
+    // Handle cases where the title might be duplicated
+    // "B001672+-+Jetta+Khomane (B001672+-+Jetta+Khomane)" -> "B001672 - Jetta Khomane"
+    if (cleanTitle.includes('(') && cleanTitle.includes(')')) {
+        // Extract the content before the parentheses
+        const beforeParen = cleanTitle.split('(')[0].trim();
+        if (beforeParen) {
+            cleanTitle = beforeParen;
+        }
+    }
+    
+    // Replace any remaining + with spaces and clean up
+    cleanTitle = cleanTitle.replace(/\+/g, ' ').replace(/\s+/g, ' ').trim();
+    
+    // Expected format: "B001672 - Jetta Khomane"
+    const parts = cleanTitle.split(' - ');
     if (parts.length >= 2) {
         return {
             burialId: parts[0].trim(),
@@ -758,26 +765,52 @@ function parseTitle(title) {
         };
     }
     
-    // Fallback: if format is different, try to extract what we can
+    // Fallback: try to find burial ID pattern and extract name
+    const burialIdMatch = cleanTitle.match(/^([B]\d+)/);
+    if (burialIdMatch) {
+        const burialId = burialIdMatch[1];
+        const name = cleanTitle.replace(burialId, '').replace(/^[\s\-]+/, '').trim();
+        return {
+            burialId: burialId,
+            name: name || 'Unknown'
+        };
+    }
+    
+    // Final fallback
     return {
         burialId: parts[0] || '',
-        name: title
+        name: cleanTitle
     };
+}
+
+// Function to properly decode URL parameters
+function properDecodeURIComponent(str) {
+    try {
+        // First replace + with spaces (URL encoding convention)
+        const spacesFixed = str.replace(/\+/g, ' ');
+        // Then decode URI component
+        return decodeURIComponent(spacesFixed);
+    } catch (e) {
+        // Fallback: just replace + with spaces if decoding fails
+        return str.replace(/\+/g, ' ');
+    }
 }
 
 // Function to update the header with extracted information
 function updateHeader() {
     urlParams = getUrlParameters();
-    console.log("urlParams---",urlParams)
+    console.log("urlParams---", urlParams);
     const headerElement = document.getElementById('burial-header');
     
     if (urlParams.title) {
         const { burialId, name } = parseTitle(urlParams.title);
         
-        if (name && burialId) {
+        if (name && burialId && name !== 'Unknown') {
             headerElement.textContent = `Burial Planning of: ${name} (${burialId})`;
         } else if (urlParams.title) {
-            headerElement.textContent = `Burial Planning of: ${urlParams.title}`;
+            // Clean up the title for display
+            const cleanTitle = urlParams.title.replace(/\+/g, ' ').replace(/\s+/g, ' ').trim();
+            headerElement.textContent = `Burial Planning of: ${cleanTitle}`;
         }
     } else if (urlParams.burialId) {
         // Fallback: if burialId is passed as separate parameter
@@ -870,49 +903,123 @@ function getProductIdFromPackage(packageData) {
     return packageData.productGroupId || packageData.id;
 }
 
-        // Update product display
-        function updateProductDisplay(product) {
-            if (!product) return;
+function getSavedOrderData() {
+    try {
+        const saved = sessionStorage.getItem('orderData');
+        if (saved) {
+            const orderData = JSON.parse(saved);
+            // Check if data is recent (within 1 hour)
+            if (Date.now() - orderData.timestamp < 3600000) {
+                return orderData;
+            }
+        }
+    } catch (error) {
+        console.error('Error reading saved order data:', error);
+    }
+    return null;
+}
+// Add this function to clear order data when package changes
+function clearOrderData() {
+    try {
+        sessionStorage.removeItem('orderData');
+    } catch (error) {
+        console.error('Error clearing order data:', error);
+    }
+}
 
-            currentProduct = product;
-            const benefits = parseBenefits(product.benefits);
-            const hasImage = product.url && product.url.trim() !== '';
+   // Replace the updateProductDisplay function
+function updateProductDisplay(product) {
+    if (!product) return;
 
-            // Update main product display
-            const productDisplayContainer = document.getElementById('product-display-container');
-            productDisplayContainer.innerHTML = `
-                <div>
-                    <div class="product-image">
-                        ${hasImage ? 
-                            `<img src="${product.url}" alt="${product.productGroupName}" onerror="this.parentElement.innerHTML='<div class=&quot;product-image-placeholder&quot;>No Image Available</div>'" />` :
-                            `<div class="product-image-placeholder">No Image Available</div>`
-                        }
-                    </div>
-                    <div class="product-description">
-                        ${product.description || 'Provide your audience with an extensive array of options, ensuring a comprehensive showcase of the full range of product features. Our diverse selection caters to various preferences and needs, empowering customers to explore and find the perfect fit for their requirements.'}
-                    </div>
-                    ${benefits.length > 0 ? `
-                        <div class="benefits-section">
-                            <h4 class="benefits-title">Benefits</h4>
-                            <ul class="benefits-list">
-                                ${benefits.map(benefit => `
-                                    <li class="benefit-item">
-                                        <div class="benefit-icon"></div>
-                                        <span>${benefit}</span>
-                                    </li>
-                                `).join('')}
-                            </ul>
-                        </div>
-                    ` : ''}
+    currentProduct = product;
+    const benefits = parseBenefits(product.benefits);
+    const hasImage = product.url && product.url.trim() !== '';
+
+    // Get saved order data to check for extras
+    const orderData = getSavedOrderData();
+    let extrasTotal = 0;
+    let extrasHTML = '';
+
+    // Calculate extras if they exist and match the current package
+    if (orderData && orderData.basePackage.name === product.productGroupName) {
+        const extras = orderData.extras || {};
+        Object.keys(extras).forEach(extraName => {
+            const quantity = extras[extraName];
+            if (quantity > 0) {
+                // We don't have extra prices here, so we'll calculate from total
+                extrasTotal = orderData.total - orderData.basePackage.price;
+            }
+        });
+
+        // Create extras display
+        if (Object.keys(extras).length > 0) {
+            extrasHTML = `
+                <div class="extras-section" style="margin: 16px 0; padding: 16px 0; border-top: 1px solid #e5e7eb;">
+                    <h4 style="font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 12px;">Added Extras:</h4>
+                    ${Object.keys(extras).map(extraName => {
+                        const quantity = extras[extraName];
+                        return `
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 14px; color: #6b7280;">
+                                <span>${extraName} (${quantity}x)</span>
+                            </div>
+                        `;
+                    }).join('')}
                 </div>
             `;
-
-            // Update order details
-            document.getElementById('current-product-name').textContent = product.productGroupName;
-            document.getElementById('current-product-price').textContent = formatPrice(product.price);
-            document.getElementById('order-total').textContent = formatPrice(product.price);
         }
+    }
 
+    // Calculate final total
+    const finalTotal = product.price + extrasTotal;
+
+    // Update main product display
+    const productDisplayContainer = document.getElementById('product-display-container');
+    productDisplayContainer.innerHTML = `
+        <div>
+            <div class="product-image">
+                ${hasImage ? 
+                    `<img src="${product.url}" alt="${product.productGroupName}" onerror="this.parentElement.innerHTML='<div class=&quot;product-image-placeholder&quot;>No Image Available</div>'" />` :
+                    `<div class="product-image-placeholder">No Image Available</div>`
+                }
+            </div>
+            <div class="product-description">
+                ${product.description || 'Provide your audience with an extensive array of options, ensuring a comprehensive showcase of the full range of product features. Our diverse selection caters to various preferences and needs, empowering customers to explore and find the perfect fit for their requirements.'}
+            </div>
+            ${benefits.length > 0 ? `
+                <div class="benefits-section">
+                    <h4 class="benefits-title">Benefits</h4>
+                    <ul class="benefits-list">
+                        ${benefits.map(benefit => `
+                            <li class="benefit-item">
+                                <div class="benefit-icon"></div>
+                                <span>${benefit}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+        </div>
+    `;
+
+    // Update order details
+    document.getElementById('current-product-name').textContent = product.productGroupName;
+    document.getElementById('current-product-price').textContent = formatPrice(product.price);
+    
+    // Add extras section to order details if they exist
+    const orderSection = document.querySelector('.order-section');
+    const existingExtras = orderSection.querySelector('.extras-section');
+    if (existingExtras) {
+        existingExtras.remove();
+    }
+
+    if (extrasHTML) {
+        const orderTotalSection = orderSection.querySelector('.order-total-section');
+        orderTotalSection.insertAdjacentHTML('beforebegin', extrasHTML);
+    }
+
+    // Update order total with extras included
+    document.getElementById('order-total').textContent = formatPrice(finalTotal);
+}
         // Render upgrade options
         function renderUpgradeOptions(products, selectedProductId) {
             const container = document.getElementById('upgrade-options-container');
@@ -969,37 +1076,46 @@ function buildUrlWithParams(baseUrl, additionalParams = {}) {
     return url.toString();
 }
 
-        // Attach event listeners to upgrade options
-        function attachUpgradeEventListeners() {
-            document.querySelectorAll('.upgrade-option').forEach(option => {
-                option.addEventListener('click', () => {
-                    const productId = option.dataset.productId;
-                    const product = findProductById(productId);
-                    
-                    if (product) {
-                        // Uncheck all checkboxes
-                        document.querySelectorAll('.upgrade-checkbox').forEach(checkbox => {
-                            checkbox.classList.remove('checked');
-                        });
-                        
-                        // Check the clicked option
-                        const checkbox = option.querySelector('.upgrade-checkbox');
-                        checkbox.classList.add('checked');
-                        
-                        // Update the main product display
-                        updateProductDisplay(product);
-                        
-                        // Update sessionStorage with new selection
-                        const selectedPackage = {
-                            ...product,
-                            timestamp: Date.now()
-                        };
-                        sessionStorage.setItem('selectedPackage', JSON.stringify(selectedPackage));
-                    }
+     // Replace the attachUpgradeEventListeners function
+function attachUpgradeEventListeners() {
+    document.querySelectorAll('.upgrade-option').forEach(option => {
+        option.addEventListener('click', () => {
+            const productId = option.dataset.productId;
+            const product = findProductById(productId);
+            
+            if (product) {
+                // Check if this is a different package than currently selected
+                const orderData = getSavedOrderData();
+                const currentPackageName = currentProduct ? currentProduct.productGroupName : '';
+                
+                if (product.productGroupName !== currentPackageName) {
+                    // Clear extras when changing package
+                    clearOrderData();
+                    console.log('Package changed - clearing extras');
+                }
+                
+                // Uncheck all checkboxes
+                document.querySelectorAll('.upgrade-checkbox').forEach(checkbox => {
+                    checkbox.classList.remove('checked');
                 });
-            });
-        }
-
+                
+                // Check the clicked option
+                const checkbox = option.querySelector('.upgrade-checkbox');
+                checkbox.classList.add('checked');
+                
+                // Update the main product display
+                updateProductDisplay(product);
+                
+                // Update sessionStorage with new selection
+                const selectedPackage = {
+                    ...product,
+                    timestamp: Date.now()
+                };
+                sessionStorage.setItem('selectedPackage', JSON.stringify(selectedPackage));
+            }
+        });
+    });
+}
         // Show error state
         function showError(message) {
             document.getElementById('product-display-container').innerHTML = `<div class="error">${message}</div>`;

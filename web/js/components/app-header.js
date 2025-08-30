@@ -12,9 +12,6 @@ class AppHeader extends HTMLElement {
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             ">
                 <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 16px;">
-                    <div style="width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                        <span style="font-weight: bold;">E</span>
-                    </div>
                     <span>Ezra</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 16px;">

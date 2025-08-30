@@ -12,8 +12,8 @@ class ProgressSteps extends HTMLElement {
   connectedCallback() {
     this.render();
     appState.subscribe(() => this.render());
+    console.log("ProgressSteps component connected",appState);
   }
-
   render() {
     this.innerHTML = `
             <div class="app-container">

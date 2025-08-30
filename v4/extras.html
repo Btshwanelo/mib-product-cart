@@ -20,13 +20,17 @@
 
       /* Header */
       .header {
-        background: linear-gradient(135deg, #1e9cfa 0%, #0ea5e9 100%);
-        color: white;
+        background:white;
+        color: black;
         padding: 12px 24px;
         display: flex;
         align-items: center;
             justify-content: center;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        font-size: 20px;
       }
 
       .logo {
@@ -577,24 +581,22 @@
       }
 
       .back-btn {
-        background: none;
-        border: none;
-        color: #6b7280;
-        font-size: 14px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
+        background: #0086C9;
+    border: none;
+    color: white;
+    font-size: 14px;
+    padding: 8px 24px;
+    border-radius: 6px;
+    cursor: pointer;
       }
 
       .save-btn {
-        background: #1e9cfa;
-        border: none;
-        color: white;
-        font-size: 14px;
-        padding: 8px 24px;
-        border-radius: 6px;
+        background: #0086C9;
+    border: none;
+    color: white;
+    font-size: 14px;
+    padding: 8px 24px;
+    border-radius: 6px;
         cursor: pointer;
       }
 
@@ -757,8 +759,8 @@
 
     <script>
       // API Configuration
-      const API_BASE_URL = "https://fff.sandbox.api.ezra360.com/api/v1.0";
-      const API_KEY = "TPiNa.aoAj0IkST3vQlyM9BRPiKphXmXSIxinKB8mPXSbnx5U";
+      const API_BASE_URL = "https://mib.sandbox.api.ezra360.com/api/v1.0";
+      const API_KEY = "1bcTCI.pWzRtox0PIXllAvT0hrPd0Sz32FvlhBIxBKgouivzfx";
 
       // Global variables
 let extrasData = [];
@@ -769,15 +771,72 @@ let urlParams = {}; // Add this line
 
 // Function to extract URL parameters
 function getUrlParameters() {
-    const urlSearchParams = new URLSearchParams(window.location.search);
     const params = {};
+    let currentUrl = window.location.href;
     
-    for (const [key, value] of urlSearchParams) {
-        params[key] = decodeURIComponent(value);
+    // Try to get the parent URL if we're in an iframe/nested context
+    try {
+        if (window.parent && window.parent !== window && window.parent.location) {
+            currentUrl = window.parent.location.href;
+        }
+    } catch (e) {
+        // Cross-origin restriction - try alternative methods
+        console.log('Cannot access parent URL due to cross-origin restrictions');
+    }
+    
+    // Alternative: Check if referrer contains our parameters
+    if (document.referrer && document.referrer.includes('title=')) {
+        currentUrl = document.referrer;
+    }
+    
+    // Debug logging
+    console.log('Current page URL:', window.location.href);
+    console.log('Parent/Referrer URL:', currentUrl);
+    console.log('Document referrer:', document.referrer);
+    
+    try {
+        // Method 1: Parse current page parameters
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        for (const [key, value] of urlSearchParams) {
+            params[key] = decodeURIComponent(value);
+        }
+        
+        // Method 2: Parse from the full URL (parent or referrer)
+        const titleMatch = currentUrl.match(/[?&]title=([^&]+)/);
+        const burialIdMatch = currentUrl.match(/[?&]burialId=([^&]+)/);
+        
+        if (titleMatch) {
+            try {
+                params.title = decodeURIComponent(titleMatch[1]);
+            } catch (e) {
+                params.title = titleMatch[1];
+            }
+        }
+        
+        if (burialIdMatch) {
+            try {
+                params.burialId = decodeURIComponent(burialIdMatch[1]);
+            } catch (e) {
+                params.burialId = burialIdMatch[1];
+            }
+        }
+        
+        // Method 3: Try to parse from hash if parameters are there
+        if (window.location.hash) {
+            const hashParams = window.location.hash.substring(1);
+            const hashUrlParams = new URLSearchParams(hashParams);
+            for (const [key, value] of hashUrlParams) {
+                params[key] = decodeURIComponent(value);
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error parsing URL parameters:', error);
     }
     
     return params;
 }
+
 
 // Function to extract burial ID and name from title parameter
 function parseTitle(title) {
@@ -929,53 +988,60 @@ function updateHeader() {
         attachEventListeners();
       }
 
-      // Calculate total price
-      function calculateTotal() {
-        let extrasTotal = 0;
-        
-        Object.keys(selectedExtras).forEach(extraName => {
-          const quantity = selectedExtras[extraName];
-          const extra = extrasData.find(e => e.name === extraName);
-          if (extra && quantity > 0) {
-            extrasTotal += extra.costPrice * quantity;
-          }
-        });
-        
-        return basePackagePrice + extrasTotal;
-      }
-
-      // Update quantity for an extra
-      function updateExtraQuantity(extraName, change) {
-        const currentQuantity = selectedExtras[extraName] || 0;
-        const newQuantity = Math.max(0, currentQuantity + change);
-        
-        if (newQuantity === 0) {
-          delete selectedExtras[extraName];
-        } else {
-          selectedExtras[extraName] = newQuantity;
-        }
-        
-        // Update UI
-        const quantitySpan = document.querySelector(`[data-extra="${extraName}"].cart-num`);
-        const checkbox = document.querySelector(`[data-extra="${extraName}"].upgrade-checkbox`);
-        
-        if (quantitySpan) {
-          quantitySpan.textContent = newQuantity;
-        }
-        
-        if (checkbox) {
-          if (newQuantity > 0) {
-            checkbox.classList.add('checked');
-          } else {
-            checkbox.classList.remove('checked');
-          }
-        }
-        
-        // Update total
-        updateOrderSummary();
-      }
-
-      // Update order summary
+     // Calculate total price
+function calculateTotal() {
+  let extrasTotal = 0;
+  
+  // Debug logging
+  console.log('Calculating total:', { selectedExtras, basePackagePrice });
+  
+  Object.keys(selectedExtras).forEach(extraName => {
+    const quantity = selectedExtras[extraName];
+    const extra = extrasData.find(e => e.name === extraName);
+    if (extra && quantity > 0) {
+      const itemTotal = extra.costPrice * quantity;
+      extrasTotal += itemTotal;
+      console.log(`${extraName}: ${quantity} x ${extra.costPrice} = ${itemTotal}`);
+    }
+  });
+  
+  const total = basePackagePrice + extrasTotal;
+  console.log('Final total:', total);
+  return total;
+}
+// Update quantity for an extra
+function updateExtraQuantity(extraName, change) {
+  const currentQuantity = selectedExtras[extraName] || 0;
+  const newQuantity = Math.max(0, currentQuantity + change);
+  
+  console.log(`Updating ${extraName}: ${currentQuantity} -> ${newQuantity}`);
+  
+  if (newQuantity === 0) {
+    delete selectedExtras[extraName];
+  } else {
+    selectedExtras[extraName] = newQuantity;
+  }
+  
+  // Update UI elements
+  const quantitySpan = document.querySelector(`[data-extra="${extraName}"].cart-num`);
+  const checkbox = document.querySelector(`[data-extra="${extraName}"].upgrade-checkbox`);
+  
+  if (quantitySpan) {
+    quantitySpan.textContent = newQuantity;
+  }
+  
+  if (checkbox) {
+    if (newQuantity > 0) {
+      checkbox.classList.add('checked');
+    } else {
+      checkbox.classList.remove('checked');
+    }
+  }
+  
+  // Update order summary and total
+  updateOrderSummary();
+}
+// Update order summary
       function updateOrderSummary() {
         const total = calculateTotal();
         document.getElementById('summary-order-total').textContent = formatPrice(total);
@@ -1090,7 +1156,7 @@ function updateHeader() {
           // Load selected package info
           const selectedPackage = getSelectedPackage();
           if (selectedPackage) {
-            basePackageName = selectedPackage.name || 'Selected Package';
+            basePackageName = selectedPackage.productGroupName || 'Selected Package';
             basePackagePrice = selectedPackage.price || 0;
           }
 
@@ -1135,20 +1201,19 @@ function updateHeader() {
         };
         sessionStorage.setItem('orderData', JSON.stringify(orderData));
         
+                  const selectedPackage = getSelectedPackage();
+
         // Update selected package with new total
         if (basePackageName !== 'Package') {
           const updatedPackage = {
-            id: getSelectedPackage()?.id,
-            name: basePackageName,
-            price: basePackagePrice,
-            totalWithExtras: calculateTotal(),
+            ...selectedPackage,
             timestamp: Date.now()
           };
           sessionStorage.setItem('selectedPackage', JSON.stringify(updatedPackage));
         }
         
         // Route to invoice page
-        window.location.href = '/WebResource?id=invoice';
+        window.location.href = '/WebResource?id=cart';
       });
 
       document.querySelector('.back-btn').addEventListener('click', () => {
