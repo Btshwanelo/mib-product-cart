@@ -327,13 +327,13 @@
       }
 
       .save-btn {
-        background: #f3f4f6;
-        border: none;
-        color: #6b7280;
-        font-size: 14px;
-        padding: 8px 24px;
-        border-radius: 6px;
-        cursor: not-allowed;
+        background: #0086C9;
+            border: none;
+            color: white;
+            font-size: 14px;
+            padding: 8px 24px;
+            border-radius: 6px;
+            cursor: pointer;
       }
 
       /* Responsive Design */
@@ -491,6 +491,116 @@
         color: #dc2626;
         text-align: center;
       }
+
+       /* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: white;
+  margin: 15% auto;
+  padding: 0;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 0 24px;
+}
+
+.modal-icon {
+  width: 48px;
+  height: 48px;
+  background: #fef3c7;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.modal-icon svg {
+  color: #DC6803;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #9ca3af;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.modal-body {
+  padding: 16px 24px 24px;
+}
+
+.modal-body h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.modal-body p {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+  padding: 0 24px 24px;
+}
+
+.modal-btn-primary {
+  background: #0086C9;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  flex: 1;
+}
+
+.modal-btn-primary:hover {
+  background: #0284c7;
+}
+
+.modal-btn-secondary {
+  background: white;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  flex: 1;
+}
+
+.modal-btn-secondary:hover {
+  background: #f9fafb;
+}
     </style>
   </head>
   <body>
@@ -557,6 +667,24 @@
       <button class="back-btn">← Back</button>
       <button class="save-btn">Save</button>
     </div>
+
+    <!-- Save Modal -->
+<div id="save-modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-alert-icon lucide-circle-alert"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg></div>
+      <button class="modal-close" onclick="closeSaveModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <h3>Saving Order</h3>
+      <p>Are you sure you want to save this order to continue later?</p>
+    </div>
+    <div class="modal-buttons">
+      <button class="modal-btn-primary" onclick="confirmSave()">Yes, Save</button>
+      <button class="modal-btn-secondary" onclick="closeSaveModal()">No, Continue</button>
+    </div>
+  </div>
+</div>  
 
     <script>
       // API Configuration
@@ -870,10 +998,41 @@ function updateHeader() {
         window.history.back();
       });
 
-      document.querySelector(".save-btn").addEventListener("click", () => {
-        // Save current state if needed
-        alert("Current packages loaded successfully");
-      });
+      // Add these new functions:
+function closeSaveModal() {
+  document.getElementById('save-modal').style.display = 'none';
+}
+
+function confirmSave() {
+  // Save current selections
+  // const orderData = {
+  //   basePackage: {
+  //     name: basePackageName,
+  //     price: basePackagePrice
+  //   },
+  //   extras: selectedExtras,
+  //   total: calculateTotal(),
+  //   timestamp: Date.now()
+  // };
+  // sessionStorage.setItem('orderData', JSON.stringify(orderData));
+  
+  // Redirect to /cart
+  window.location.href = '/cart';
+}
+
+// Close modal when clicking outside of it
+window.onclick = function(event) {
+  const modal = document.getElementById('save-modal');
+  if (event.target == modal) {
+    closeSaveModal();
+  }
+}
+
+             // Replace the existing save button handler with this:
+document.querySelector('.save-btn').addEventListener('click', () => {
+  // Show the save modal
+  document.getElementById('save-modal').style.display = 'block';
+});
 
       // Start the application
       document.addEventListener('DOMContentLoaded', initializePage);
