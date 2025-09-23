@@ -898,23 +898,29 @@
         console.log("urlParams---", urlParams);
         const headerElement = document.getElementById("burial-header");
 
+        // Always use the burialId parameter from URL for API calls
+        if (urlParams.burialId) {
+          burialId = urlParams.burialId; // Use the actual burialId parameter for API
+        }
+
+        // Extract name from title for display, regardless of which burialId we use
+        let displayName = "Unknown";
+        let displayBurialId = urlParams.burialId || "Unknown";
+
         if (urlParams.title) {
           const { burialId: extractedBurialId, name } = parseTitle(
             urlParams.title
           );
-
-          if (name && extractedBurialId) {
-            headerElement.textContent = `Burial Planning of: ${name} (${extractedBurialId})`;
-            burialId = extractedBurialId; // Store the extracted burialId
-          } else if (urlParams.title) {
-            headerElement.textContent = `Burial Planning of: ${urlParams.title}`;
+          if (name) {
+            displayName = name;
           }
-        } else if (urlParams.burialId) {
-          // Fallback: if burialId is passed as separate parameter
-          const name = urlParams.name || "Unknown";
-          headerElement.textContent = `Burial Planning of: ${name} (${urlParams.burialId})`;
-          burialId = urlParams.burialId; // Store the extracted burialId
+          // Use the extracted burialId from title for display (B001681)
+          if (extractedBurialId) {
+            displayBurialId = extractedBurialId;
+          }
         }
+
+        headerElement.textContent = `Burial Planning of: ${displayName} (${displayBurialId})`;
 
         // Log extracted parameters for debugging
         console.log("Extracted URL Parameters:", urlParams);
@@ -1256,7 +1262,7 @@
             JSON.stringify(selectedPackage)
           );
         }
-        window.location.href = "/WebResource?id=extras";
+        window.location.href = "/WebResource?id=cart-extras";
       });
 
       document.querySelector(".checkout-btn").addEventListener("click", () => {
@@ -1272,14 +1278,12 @@
           );
         }
 
-        // Build URL with parameters
-        const invoiceUrl = buildUrlWithParams("/WebResource?id=invoice");
-        window.location.href = invoiceUrl;
+        window.location.href = "/WebResource?id=cart-invoice";
       });
 
       document.querySelector(".back-btn").addEventListener("click", () => {
         // Go back to package selection
-        const productsUrl = buildUrlWithParams("/WebResource?id=products");
+        const productsUrl = buildUrlWithParams("/WebResource?id=cart-products");
         window.location.href = productsUrl;
       });
 

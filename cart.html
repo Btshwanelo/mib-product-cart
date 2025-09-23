@@ -531,7 +531,7 @@
             console.warn(
               "API response missing PageIndicator, defaulting to products page"
             );
-            appData.nextPage = "/cart-products.html";
+            appData.nextPage = "/WebResource?id=cart-products";
           }
 
           console.log("Burial data loaded successfully:", data);
@@ -545,15 +545,15 @@
       // Map PageIndicator to routes
       function getRouteFromPageIndicator(pageIndicator) {
         const routeMap = {
-          ChoosePackagePage: "/cart-products.html",
-          CustomizationPage: "/cart-cart.html",
-          CartPage: "/cart-cart.html",
-          ExtrasPage: "/cart-extras.html",
-          InvoicePage: "/cart-invoice.html",
-          SuccessPage: "/cart-success.html",
+          ChoosePackagePage: "/WebResource?id=cart-products",
+          CustomizationPage: "/WebResource?id=cart-extras",
+          CartPage: "/WebResource?id=cart-cart",
+          ExtrasPage: "/WebResource?id=cart-extras",
+          InvoicePage: "/WebResource?id=cart-invoice",
+          SuccessPage: "/WebResource?id=cart-success",
         };
 
-        return routeMap[pageIndicator] || "/cart-products.html";
+        return routeMap[pageIndicator] || "/WebResource?id=cart-products";
       }
 
       // Preload assets - removed as per requirements
@@ -656,7 +656,8 @@
             console.log("Data is fresh, redirecting to:", data.nextPage);
             updateProgress(100, "Loading cached data...");
             setTimeout(() => {
-              window.location.href = data.nextPage || "/products.html";
+              window.location.href =
+                data.nextPage || "/WebResource?id=cart-products";
             }, 1000);
             return true;
           } else {

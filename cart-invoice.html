@@ -1019,17 +1019,20 @@
           const burialId = urlParams.burialId;
 
           // Prepare ProductGroupData using selectedPackageData
-          const productGroupData = [
-            {
-              productGroupId:
-                selectedPackageData?.productGroupId || "default-package-id",
+          // Only include ProductGroupData if there's a valid base package (price > 0)
+          const productGroupData = [];
+          const basePackagePrice =
+            selectedPackageData?.price || orderData.basePackage.price || 0;
+
+          if (basePackagePrice > 0 && selectedPackageData?.productGroupId) {
+            productGroupData.push({
+              productGroupId: selectedPackageData.productGroupId,
               productGroupName:
-                selectedPackageData?.productGroupName ||
+                selectedPackageData.productGroupName ||
                 orderData.basePackage.name,
-              price:
-                selectedPackageData?.price || orderData.basePackage.price || 0,
-            },
-          ];
+              price: basePackagePrice,
+            });
+          }
 
           // Prepare ProductData (extras) using orderData.extras
           const productData = [];
@@ -1124,7 +1127,7 @@
             sessionStorage.removeItem("selectedPackage");
 
             // Route to success page or back to start
-            window.location.href = "/WebResource?id=success";
+            window.location.href = "/WebResource?id=cart-success";
           } else {
             throw new Error(result.clientMessage || "Failed to submit order");
           }
@@ -1202,7 +1205,7 @@
         .addEventListener("click", submitOrder);
 
       document.querySelector(".back-btn").addEventListener("click", () => {
-        window.location.href = "/WebResource?id=cart"; // Navigate back to cart page
+        window.location.href = "/WebResource?id=cart-cart"; // Navigate back to cart page
       });
 
       // Replace the existing save button handler with this:
@@ -1231,7 +1234,7 @@
         sessionStorage.setItem("orderData", JSON.stringify(currentOrderData));
 
         // Redirect to /cart
-        window.location.href = "/cart";
+        window.location.href = "/WebResource?id=cat-cart";
       }
 
       // Close modal when clicking outside of it

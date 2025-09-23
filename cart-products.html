@@ -817,23 +817,29 @@
         urlParams = getUrlParameters();
         const headerElement = document.getElementById("burial-header");
 
+        // Always use the burialId parameter from URL for API calls
+        if (urlParams.burialId) {
+          burialId = urlParams.burialId; // Use the actual burialId parameter for API
+        }
+
+        // Extract name from title for display, regardless of which burialId we use
+        let displayName = "Unknown";
+        let displayBurialId = urlParams.burialId || "Unknown";
+
         if (urlParams.title) {
           const { burialId: extractedBurialId, name } = parseTitle(
             urlParams.title
           );
-
-          if (name && extractedBurialId) {
-            headerElement.textContent = `Burial Planning of: ${name} (${extractedBurialId})`;
-            burialId = extractedBurialId; // Store the extracted burialId
-          } else if (urlParams.title) {
-            headerElement.textContent = `Burial Planning of: ${urlParams.title}`;
+          if (name) {
+            displayName = name;
           }
-        } else if (urlParams.burialId) {
-          // Fallback: if burialId is passed as separate parameter
-          const name = urlParams.name || "Unknown";
-          headerElement.textContent = `Burial Planning of: ${name} (${urlParams.burialId})`;
-          burialId = urlParams.burialId; // Store the extracted burialId
+          // Use the extracted burialId from title for display (B001681)
+          if (extractedBurialId) {
+            displayBurialId = extractedBurialId;
+          }
         }
+
+        headerElement.textContent = `Burial Planning of: ${displayName} (${displayBurialId})`;
 
         // Log extracted parameters for debugging
         console.log("Extracted URL Parameters:", urlParams);
@@ -1023,7 +1029,7 @@
             );
 
             // Route to cart page
-            window.location.href = "/WebResource?id=cart";
+            window.location.href = "/WebResource?id=cart-cart";
           });
         });
 
@@ -1100,7 +1106,7 @@
         // sessionStorage.setItem('orderData', JSON.stringify(orderData));
 
         // Redirect to /cart
-        window.location.href = "/cart";
+        window.location.href = "/WebResource?id=cart-cart";
       }
 
       // Close modal when clicking outside of it
