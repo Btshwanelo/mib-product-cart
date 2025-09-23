@@ -1,772 +1,709 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cart & Customization</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ezra - Loading</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-        }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background-color: #f9fafb;
+        color: #333;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
 
-        /* Header */
+      /* Header */
+      .header {
+        background: white;
+        color: black;
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        font-size: 20px;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        font-size: 16px;
+      }
+
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .user-avatar {
+        width: 32px;
+        height: 32px;
+        background: white;
+        border-radius: 50%;
+        color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 24px;
+      }
+
+      .loading-container {
+        text-align: center;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid #e5e7eb;
+        border-top: 4px solid #0ba5ec;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 32px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 12px;
+      }
+
+      .loading-message {
+        color: #6b7280;
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 32px;
+      }
+
+      .progress-bar {
+        width: 100%;
+        max-width: 300px;
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 4px;
+        margin: 0 auto;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #0ba5ec, #1e9cfa);
+        border-radius: 4px;
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+
+      .error-container {
+        display: none;
+        text-align: center;
+      }
+
+      .error-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #ef4444;
+        margin-bottom: 12px;
+      }
+
+      .error-message {
+        color: #6b7280;
+        font-size: 16px;
+        margin-bottom: 24px;
+      }
+
+      .retry-btn {
+        background: #0ba5ec;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      .retry-btn:hover {
+        background: #0284c7;
+      }
+
+      /* Status Messages */
+      .status-message {
+        font-size: 14px;
+        color: #6b7280;
+        margin-top: 16px;
+        min-height: 20px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
         .header {
-            background: linear-gradient(135deg, #1e9cfa 0%, #0ea5e9 100%);
-            color: white;
-            padding: 12px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          padding: 12px 16px;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .search-container {
-            flex: 1;
-            max-width: 400px;
-            margin: 0 24px;
-            position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 10px 40px 10px 16px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            background: white;
-            outline: none;
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .quick-create {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            background: white;
-            border-radius: 50%;
-            color: black;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        /* Progress Steps */
-        .progress-container {
-            background: white;
-            padding: 24px;
-            border-bottom: 1px solid #e5e7eb;
-            max-width: 1280px;
-            margin:10px auto;
-            border-radius: 16px;
-        }
-
-        .progress-steps {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            flex: 1;
-            position: relative;
-        }
-
-        .step:not(:last-child)::after {
-             content: '';
-            position: absolute;
-            top: 24px;
-            right: -50%;
-            width: 100%;
-            height: 2px;
-            background: #e5e7eb;
-            z-index: 1;
-        }
-
-        /* .step.active:not(:last-child)::after {
-            background: #1e9cfa;
-        } */
-
-        .step-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
-            position: relative;
-            z-index: 2;
-            font-size: 20px;
-            color: #9ca3af;
-            border: 1px solid #E4E7EC;
-        }
-
-        /* .step.inactive .step-icon {
-            background: #f3f4f6;
-            color: #9ca3af;
-        } */
-
-        .step-label {
-              font-size: 14px;
-            color: #6b7280;
-            font-weight: 500;
-        }
-
-        .step.active .step-label {
-            color: #344054;
-        }
-
-        /* Main Content */
         .main-content {
-             background: white;
-            padding: 32px 14px;
-            min-height: calc(100vh - 200px);
-            max-width: 1280px;
-            margin:10px auto;
-            border-radius: 16px;
-            display: flex;
-            
+          padding: 32px 16px;
         }
 
-        .content-wrapper {
-            /* max-width: 1200px; */
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 48px;
+        .loading-title {
+          font-size: 24px;
         }
 
-        /* Left Column - Product Info */
-        .product-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .loading-message {
+          font-size: 14px;
         }
-
-        .product-display {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 0;
-            width: 100%;
+      }
+      @media (max-width: 480px) {
+        .header-actions .quick-create span {
+          display: none;
         }
 
         .product-image {
-            width: 100%;
-            max-width: 600px;
-            height: 400px;
-            background: white;
-            border-radius: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: none;
-            margin-bottom: 32px;
+          height: 180px;
         }
 
-        .product-description {
-            color: #6b7280;
-            font-size: 16px;
-            line-height: 1.6;
-            max-width: 600px;
-            text-align: left;
-        }
-
-        /* Right Column - Order Details */
         .order-section {
-            background: #f9fafb;
-            border-radius: 12px;
-            padding: 24px;
-            height: fit-content;
+          padding: 20px;
         }
-
-        .order-title {
-            font-size: 16px;
-            color: #6b7280;
-            margin-bottom: 8px;
-        }
-
-        .product-name {
-            font-size: 24px;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 8px;
-        }
-
-        .product-price {
-            font-size: 24px;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 24px;
-        }
-
-        .order-total-section {
-            border-top: 1px solid #e5e7eb;
-            padding-top: 16px;
-            margin-bottom: 24px;
-        }
-
-        .order-total-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .order-total-label {
-            font-size: 16px;
-            color: #111827;
-            font-weight: 600;
-        }
-
-        .order-total-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #111827;
-        }
-
-        .customize-btn {
-            background: white;
-            border: 1px solid #d1d5db;
-            color: #374151;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 12px;
-            transition: all 0.2s ease;
-        }
-
-        .customize-btn:hover {
-            border-color: #1e9cfa;
-            background: #f0f9ff;
-        }
-
-        .checkout-btn {
-            background: #0086C9;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 24px;
-            transition: background 0.2s ease;
-        }
-
-        .benefit-icon {
-    width: 16px;
-    height: 16px;
-    border:2px solid #0086C9;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.benefit-icon::after {
-    content: '✓';
-    color: #0086C9;
-    font-size: 10px;
-    font-weight: bold;
-}
-
-        .benefit-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 0;
-    font-size: 14px;
-    color: #475467;
-    text-align: left;
-}
-
-        .benefits-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-
-        .benefits-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 16px;
-    text-align: left;
-}
-
-          .benefits-section {
-    display: block;
-    padding: 20px 0 0 0;
-    border-top: 1px solid #E4E7EC;
-    margin-top: 20px;
-}
-
-        .checkout-btn:hover {
-            background: #0284c7;
-        }
-
-        .upgrade-section {
-            margin-top: 24px;
-        }
-
-        .upgrade-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 16px;
-        }
-
-        .upgrade-option {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .upgrade-option:hover {
-            border-color: #1e9cfa;
-            background: #f0f9ff;
-        }
-
-        .upgrade-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .upgrade-image {
-            width: 40px;
-            height: 24px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .upgrade-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .upgrade-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .upgrade-price {
-            font-size: 12px;
-            color: #6b7280;
-        }
-
-        .upgrade-checkbox {
-            width: 18px;
-            height: 18px;
-            border: 2px solid #d1d5db;
-            border-radius: 3px;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .upgrade-checkbox.checked {
-            background: #1e9cfa;
-            border-color: #1e9cfa;
-        }
-
-        .upgrade-checkbox.checked::after {
-            content: '✓';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        /* Footer Navigation */
-        .footer-nav {
-             background: white;
-            padding: 16px 24px;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1280px;
-            margin:10px auto;
-            border-radius: 16px;
-        }
-
-        .back-btn {
-            background: none;
-            border: none;
-            color: #6b7280;
-            font-size: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-        }
-
-        .save-btn {
-            background: #0086C9;
-            border: none;
-            color: white;
-            font-size: 14px;
-            padding: 8px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .content-wrapper {
-                grid-template-columns: 1fr;
-                gap: 32px;
-            }
-
-            .order-section {
-                order: -1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                padding: 12px 16px;
-            }
-
-            .search-container {
-                margin: 0 16px;
-                max-width: none;
-            }
-
-            .main-content {
-                padding: 24px 16px;
-            }
-
-            .product-image {
-                width: 100%;
-                max-width: 350px;
-                height: 200px;
-            }
-
-            .footer-nav {
-                padding: 16px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header-actions .quick-create span {
-                display: none;
-            }
-
-            .product-image {
-                height: 180px;
-            }
-
-            .order-section {
-                padding: 20px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Header -->
-     <div class="header">
-        <div class="logo">
-            <div class="logo-icon">
-                <img src="/assets/Small.png" alt="Logo" width="24" height="24">
-            </div>
-            <span>Ezra</span>
-        </div>
-        <div class="search-container">
-            <!-- <input type="text" class="search-input" placeholder="Search for a page">
-            <div class="search-icon"></div> -->
-        </div>
-        <div class="header-actions">
-            <!-- <button class="quick-create">
-                <span>Quick Create</span>
-            </button> -->
-            <div class="user-avatar">MM</div>
-        </div>
-    </div>
-
-    <!-- Progress Steps -->
-      <div class="progress-container">
-        <div class="progress-steps">
-            <div class="step">
-                <div class="step-icon">
-                    <img src="/assets/package.svg" width="24" height="24" alt="Package Icon" />
-                </div>
-                <div class="step-label">Choose Package</div>
-            </div>
-            <div class="step active">
-                <div class="step-icon">
-                    <img src="/assets/shopping-bag-03.svg" width="24" height="24" alt="Package Icon" />
-                </div>
-                <div class="step-label">Cart & Customization</div>
-            </div>
-            <div class="step">
-                <div class="step-icon">
-                    <img src="/assets/file-check-02.png" width="24" height="24" alt="Package Icon" />
-                </div>
-                <div class="step-label">Invoice</div>
-            </div>
-        </div>
+    <div class="header">
+      <div class="">
+        <h1 id="burial-header">Burial Planning</h1>
+      </div>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="content-wrapper">
-            <!-- Left Column - Product Display -->
-             <div>
-            <img src="/assets/Kingston Maluti.png" alt="Kingston-Maluti" />
-            <div class="product-description">
-                    Provide your audience with an extensive array of options, ensuring a comprehensive showcase of the full range of product features. Our diverse selection caters to various preferences and needs, empowering customers to explore and find the perfect fit for their requirements.
-                </div>
-                    <div class="benefits-section" id="benefits-fantasy">
-        <h4 class="benefits-title">Benefits</h4>
-        <ul class="benefits-list">
-            <li class="benefit-item">
-                <div class="benefit-icon"></div>
-                <span>Premium Coffin</span>
-            </li>
-            <li class="benefit-item">
-                <div class="benefit-icon"></div>
-                <span>Luxury Hearse</span>
-            </li>
-            <li class="benefit-item">
-                <div class="benefit-icon"></div>
-                <span>Family Car within the first 500km</span>
-            </li>
-            <li class="benefit-item">
-                <div class="benefit-icon"></div>
-                <span>Premium Coffin Spray (Fresh Flower)</span>
-            </li>
-            <li class="benefit-item">
-                <div class="benefit-icon"></div>
-                <span>Full Refreshments at grave site</span>
-            </li>
-            <li class="benefit-item">
-                <div class="benefit-icon"></div>
-                <span>Premium Decor at grave site</span>
-            </li>
-            <li class="benefit-item">
-                <div class="benefit-icon"></div>
-                <span>Custom Grave board</span>
-            </li>
-            <li class="benefit-item">
-                <div class="benefit-icon"></div>
-                <span>200 color programs</span>
-            </li>
-        </ul>
-    </div>
-        </div>
+      <div class="loading-container" id="loadingContainer">
+        <div class="loading-spinner"></div>
+        <h1 class="loading-title">Preparing Your Experience</h1>
+        <p class="loading-message">
+          We're loading your funeral packages and setting up everything you
+          need.
+        </p>
+      </div>
 
-             <!-- Right Column - Order Details -->
-            <div class="order-section">
-                <div class="order-title">Order Details</div>
-                <h2 class="product-name">Kingston Maluti</h2>
-                <div class="product-price">R30 000</div>
-                
-                <div class="order-total-section">
-                    <div class="order-total-row">
-                        <span class="order-total-label">Order Total</span>
-                        <span class="order-total-value">R30 000</span>
-                    </div>
-                </div>
-                
-                <button class="customize-btn">Customize</button>
-                <button class="checkout-btn">Proceed to Checkout</button>
-                
-                <div class="upgrade-section">
-                    <h3 class="upgrade-title">Upgrade Package</h3>
-                    
-                    <div class="upgrade-option" data-price="30000">
-                        <div class="upgrade-info">
-                             <img src="/assets/kingston Mal.png" alt="kingston Mal small image" />
-                            <div class="upgrade-details">
-                                <div class="upgrade-name">Kingston Maluti</div>
-                                <div class="upgrade-price">R30 000</div>
-                            </div>
-                        </div>
-                        <div class="upgrade-checkbox checked"></div>
-                    </div>
-                    
-                    <div class="upgrade-option" data-price="35500">
-                        <div class="upgrade-info">
-                            <img src="/assets/Fantasy-mat-small-img.png" alt="Fantasy-mat-small-img" />
-                            <div class="upgrade-details">
-                                <div class="upgrade-name">Fantasy-Matt</div>
-                                <div class="upgrade-price">R35 500</div>
-                            </div>
-                        </div>
-                        <div class="upgrade-checkbox"></div>
-                    </div>
-                    
-                    <div class="upgrade-option" data-price="25500">
-                        <div class="upgrade-info"> 
-                            <img src="/assets/Pine-rs-gold.png" alt="Pine-rs-gold-coffin-img" />
-                            <div class="upgrade-details">
-                                <div class="upgrade-name">Pine/RS Gold</div>
-                                <div class="upgrade-price">R25 500</div>
-                            </div>
-                        </div>
-                        <div class="upgrade-checkbox"></div>
-                    </div>
-                    
-                    <div class="upgrade-option" data-price="26500">
-                        <div class="upgrade-info">
-                            <img src="/assets/1-4 VIEW TEAR.png" alt="1/4 view img" />
-                            <div class="upgrade-details">
-                                <div class="upgrade-name">1/4 View Tear</div>
-                                <div class="upgrade-price">R26 500</div>
-                            </div>
-                        </div>
-                        <div class="upgrade-checkbox"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-                </div>
-               
-                
-            </div>
-
-         
-
-    <!-- Footer Navigation -->
-    <div class="footer-nav">
-        <button class="back-btn">
-            ← Back
-        </button>
-        <button class="save-btn">Save</button>
+      <div class="error-container" id="errorContainer">
+        <h1 class="error-title">Connection Error</h1>
+        <p class="error-message">
+          We couldn't load the required data. Please check your connection and
+          try again.
+        </p>
+        <button class="retry-btn" onclick="initializeApp()">Retry</button>
+      </div>
     </div>
 
     <script>
-        let currentPrice = 30000;
+      // Configuration
+      const API_CONFIG = {
+        baseUrl:
+          "https://mib.sandbox.api.ezra360.com/api/v1.0/entities/ExecuteRequest",
+        apiKey: "1bcTCI.pWzRtox0PIXllAvT0hrPd0Sz32FvlhBIxBKgouivzfx",
+        burialId: "",
+      };
 
-        // Handle upgrade package selection
-        document.querySelectorAll('.upgrade-option').forEach(option => {
-            option.addEventListener('click', () => {
-                // Uncheck all checkboxes
-                document.querySelectorAll('.upgrade-checkbox').forEach(checkbox => {
-                    checkbox.classList.remove('checked');
-                });
-                
-                // Check the clicked option
-                const checkbox = option.querySelector('.upgrade-checkbox');
-                checkbox.classList.add('checked');
-                
-                // Update price
-                const newPrice = parseInt(option.dataset.price);
-                currentPrice = newPrice;
-                
-                // Update price displays
-                document.querySelector('.product-price').textContent = `R${newPrice.toLocaleString()}`;
-                document.querySelector('.order-total-value').textContent = `R${newPrice.toLocaleString()}`;
-                
-                // Update product name
-                const productName = option.querySelector('.upgrade-name').textContent;
-                document.querySelector('.product-name').textContent = productName;
-            });
-        });
+      // Global variables for URL parameters
+      let urlParams = {};
 
-        // Other button handlers
-        document.querySelector('.customize-btn').addEventListener('click', () => {
-            alert('Opening customization options');
-        });
+      // Function to extract URL parameters
+      function getUrlParameters() {
+        const params = {};
+        let currentUrl = window.location.href;
 
-        document.querySelector('.checkout-btn').addEventListener('click', () => {
-            alert('Proceeding to checkout');
-        });
+        // Try to get the parent URL if we're in an iframe/nested context
+        try {
+          if (
+            window.parent &&
+            window.parent !== window &&
+            window.parent.location
+          ) {
+            currentUrl = window.parent.location.href;
+          }
+        } catch (e) {
+          // Cross-origin restriction - try alternative methods
+          console.log(
+            "Cannot access parent URL due to cross-origin restrictions"
+          );
+        }
 
-        document.querySelector('.back-btn').addEventListener('click', () => {
-            alert('Going back to package selection');
-        });
+        // Alternative: Check if referrer contains our parameters
+        if (document.referrer && document.referrer.includes("title=")) {
+          currentUrl = document.referrer;
+        }
 
-        document.querySelector('.save-btn').addEventListener('click', () => {
-            alert('Saving current selection');
-        });
+        // Debug logging
+        console.log("Current page URL:", window.location.href);
+        console.log("Parent/Referrer URL:", currentUrl);
+        console.log("Document referrer:", document.referrer);
 
-        document.querySelector('.quick-create').addEventListener('click', () => {
-            alert('Opening Quick Create');
-        });
+        try {
+          // Method 1: Parse current page parameters
+          const urlSearchParams = new URLSearchParams(window.location.search);
+          for (const [key, value] of urlSearchParams) {
+            params[key] = decodeURIComponent(value);
+          }
+
+          // Method 2: Parse from the full URL (parent or referrer)
+          const titleMatch = currentUrl.match(/[?&]title=([^&]+)/);
+          const burialIdMatch = currentUrl.match(/[?&]burialId=([^&]+)/);
+
+          if (titleMatch) {
+            try {
+              params.title = decodeURIComponent(titleMatch[1]);
+            } catch (e) {
+              params.title = titleMatch[1];
+            }
+          }
+
+          if (burialIdMatch) {
+            try {
+              params.burialId = decodeURIComponent(burialIdMatch[1]);
+            } catch (e) {
+              params.burialId = burialIdMatch[1];
+            }
+          }
+
+          // Method 3: Try to parse from hash if parameters are there
+          if (window.location.hash) {
+            const hashParams = window.location.hash.substring(1);
+            const hashUrlParams = new URLSearchParams(hashParams);
+            for (const [key, value] of hashUrlParams) {
+              params[key] = decodeURIComponent(value);
+            }
+          }
+        } catch (error) {
+          console.error("Error parsing URL parameters:", error);
+        }
+
+        return params;
+      }
+
+      // Function to extract burial ID and name from title parameter
+      function parseTitle(title) {
+        if (!title) return { burialId: "", name: "" };
+
+        // Expected format: "B001665 - Thabiso Zungu"
+        const parts = title.split(" - ");
+        if (parts.length >= 2) {
+          return {
+            burialId: parts[0].trim(),
+            name: parts.slice(1).join(" - ").trim(),
+          };
+        }
+
+        // Fallback: if format is different, try to extract what we can
+        return {
+          burialId: parts[0] || "",
+          name: title,
+        };
+      }
+
+      // Function to update the header with extracted information
+      function updateHeader() {
+        urlParams = getUrlParameters();
+        const headerElement = document.getElementById("burial-header");
+
+        if (urlParams.title) {
+          const { burialId, name } = parseTitle(urlParams.title);
+
+          if (name && burialId) {
+            headerElement.textContent = `Burial Planning of: ${name} (${burialId})`;
+          } else if (urlParams.title) {
+            headerElement.textContent = `Burial Planning of: ${urlParams.title}`;
+          }
+        } else if (urlParams.burialId) {
+          // Fallback: if burialId is passed as separate parameter
+          const name = urlParams.name || "Unknown";
+          headerElement.textContent = `Burial Planning of: ${name} (${urlParams.burialId})`;
+        }
+
+        // Log extracted parameters for debugging
+        console.log("Extracted URL Parameters:", urlParams);
+        console.log(
+          "Parsed title:",
+          urlParams.title ? parseTitle(urlParams.title) : "No title parameter"
+        );
+      }
+
+      // Global state
+      let appData = {
+        burialData: null,
+        nextPage: null,
+        loadingProgress: 0,
+      };
+
+      // Status messages for different loading stages
+      const statusMessages = [
+        "Initializing...",
+        "Connecting to server...",
+        "Loading burial information...",
+        "Fetching page details...",
+        "Processing response...",
+        "Finalizing setup...",
+        "Ready! Redirecting...",
+      ];
+
+      // Initialize the application
+      async function initializeApp() {
+        console.log("=== STARTING APP INITIALIZATION ===");
+
+        // Extract URL parameters and update header
+        updateHeader();
+
+        // Update API config with extracted burialId
+        if (urlParams.burialId) {
+          API_CONFIG.burialId = urlParams.burialId;
+          console.log(
+            "Using burialId from URL parameters:",
+            API_CONFIG.burialId
+          );
+        } else if (urlParams.title) {
+          const { burialId } = parseTitle(urlParams.title);
+          if (burialId) {
+            API_CONFIG.burialId = burialId;
+            console.log(
+              "Using burialId from title parameter:",
+              API_CONFIG.burialId
+            );
+          }
+        }
+
+        console.log("API Config:", API_CONFIG);
+
+        try {
+          showLoadingContainer();
+          updateProgress(0, "Initializing...");
+          console.log("Loading container shown, progress set to 0");
+
+          // Step 1: Initialize (10%)
+          await delay(500);
+          updateProgress(10, "Connecting to server...");
+          console.log("Step 1 complete - Connecting to server");
+
+          // Step 2: Fetch burial data (30%)
+          console.log("About to fetch burial data...");
+          await fetchBurialData();
+          updateProgress(30, "Loading burial information...");
+          console.log("Step 2 complete - Burial data fetched");
+
+          // Step 3: Process page routing (50%)
+          await delay(800);
+          updateProgress(50, "Fetching page details...");
+          console.log("Step 3 complete - Processing routing");
+
+          // Step 4: Skip asset preloading (80%)
+          await preloadAssets();
+          updateProgress(80, "Processing response...");
+          console.log("Step 4 complete - Assets processed");
+
+          // Step 5: Final setup (95%)
+          await delay(500);
+          updateProgress(95, "Finalizing setup...");
+          console.log("Step 5 complete - Finalizing setup");
+
+          // Step 6: Complete and redirect (100%)
+          await delay(300);
+          updateProgress(100, "Ready! Redirecting...");
+          console.log("Step 6 complete - Ready to redirect");
+
+          // Store data in sessionStorage for use in other pages
+          storeAppData();
+
+          // Redirect to the determined page
+          await delay(800);
+          console.log("Redirecting to:", appData.nextPage);
+          window.location.href = appData.nextPage;
+        } catch (error) {
+          console.error("=== INITIALIZATION FAILED ===");
+          console.error("Error:", error);
+          console.error("Error stack:", error.stack);
+          showErrorContainer();
+        }
+      }
+
+      // Fetch burial data from API
+      async function fetchBurialData() {
+        try {
+          console.log("Making API call to:", API_CONFIG.baseUrl);
+          console.log("Request payload:", {
+            entityName: "Burial",
+            requestName: "BurialPageIndicator",
+            inputParamters: {
+              BurialData: {
+                BurialId: API_CONFIG.burialId,
+              },
+            },
+          });
+
+          const response = await fetch(API_CONFIG.baseUrl, {
+            method: "POST",
+            headers: {
+              "api-key": API_CONFIG.apiKey,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              entityName: "Burial",
+              requestName: "BurialPageIndicator",
+              inputParamters: {
+                BurialData: {
+                  BurialId: API_CONFIG.burialId,
+                },
+              },
+            }),
+          });
+
+          console.log("Response status:", response.status);
+          console.log("Response headers:", response.headers);
+          // console.log('Response headers:', JSON.parse(response));
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          console.log("API Response:", data);
+
+          // Store the burial data
+          appData.burialData = data;
+
+          // Determine the next page based on API response
+          if (
+            data.isSuccess &&
+            data.outputParameters &&
+            data.outputParameters.PageIndicator
+          ) {
+            const pageIndicator = data.outputParameters.PageIndicator;
+            console.log("Page Indicator:", pageIndicator);
+
+            // Store the page indicator for routing
+            appData.nextPage = getRouteFromPageIndicator(pageIndicator);
+          } else {
+            console.warn(
+              "API response missing PageIndicator, defaulting to products page"
+            );
+            appData.nextPage = "/cart-products.html";
+          }
+
+          console.log("Burial data loaded successfully:", data);
+        } catch (error) {
+          console.error("Failed to fetch burial data:", error);
+          console.error("Error details:", error.message);
+          throw error;
+        }
+      }
+
+      // Map PageIndicator to routes
+      function getRouteFromPageIndicator(pageIndicator) {
+        const routeMap = {
+          ChoosePackagePage: "/cart-products.html",
+          CustomizationPage: "/cart-cart.html",
+          CartPage: "/cart-cart.html",
+          ExtrasPage: "/cart-extras.html",
+          InvoicePage: "/cart-invoice.html",
+          SuccessPage: "/cart-success.html",
+        };
+
+        return routeMap[pageIndicator] || "/cart-products.html";
+      }
+
+      // Preload assets - removed as per requirements
+      async function preloadAssets() {
+        // Skip asset preloading as requested
+        console.log("Skipping asset preloading - will load from API");
+        return Promise.resolve();
+      }
+
+      // Store data in sessionStorage
+      function storeAppData() {
+        try {
+          sessionStorage.setItem(
+            "ezra_app_data",
+            JSON.stringify({
+              burialData: appData.burialData,
+              nextPage: appData.nextPage,
+              timestamp: Date.now(),
+            })
+          );
+
+          console.log("App data stored successfully");
+        } catch (error) {
+          console.warn("Failed to store app data:", error);
+        }
+      }
+
+      // UI Helper Functions
+      function updateProgress(percentage, message) {
+        console.log(`Progress: ${percentage}% - ${message}`);
+        const progressFill = document.getElementById("progressFill");
+        const statusMessage = document.getElementById("statusMessage");
+
+        if (progressFill) {
+          progressFill.style.width = percentage + "%";
+        } else {
+          console.error("Progress fill element not found");
+        }
+
+        if (statusMessage) {
+          statusMessage.textContent = message;
+        } else {
+          console.error("Status message element not found");
+        }
+
+        appData.loadingProgress = percentage;
+      }
+
+      function showLoadingContainer() {
+        console.log("Showing loading container");
+        const loadingContainer = document.getElementById("loadingContainer");
+        const errorContainer = document.getElementById("errorContainer");
+
+        if (loadingContainer) {
+          loadingContainer.style.display = "block";
+        } else {
+          console.error("Loading container not found");
+        }
+
+        if (errorContainer) {
+          errorContainer.style.display = "none";
+        } else {
+          console.error("Error container not found");
+        }
+      }
+
+      function showErrorContainer() {
+        console.log("Showing error container");
+        const loadingContainer = document.getElementById("loadingContainer");
+        const errorContainer = document.getElementById("errorContainer");
+
+        if (loadingContainer) {
+          loadingContainer.style.display = "none";
+        }
+
+        if (errorContainer) {
+          errorContainer.style.display = "block";
+        }
+      }
+
+      // Utility function for delays
+      function delay(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      // Check if data is already loaded (for page refreshes)
+      function checkExistingData() {
+        console.log("Checking for existing data...");
+        const existingData = sessionStorage.getItem("ezra_app_data");
+
+        if (existingData) {
+          console.log("Found existing data:", existingData);
+          const data = JSON.parse(existingData);
+          const dataAge = Date.now() - data.timestamp;
+
+          console.log("Data age (minutes):", dataAge / (1000 * 60));
+
+          // If data is less than 5 minutes old, redirect immediately
+          if (dataAge < 5 * 60 * 1000) {
+            console.log("Data is fresh, redirecting to:", data.nextPage);
+            updateProgress(100, "Loading cached data...");
+            setTimeout(() => {
+              window.location.href = data.nextPage || "/products.html";
+            }, 1000);
+            return true;
+          } else {
+            console.log("Data is stale, will fetch fresh data");
+          }
+        } else {
+          console.log("No existing data found");
+        }
+        return false;
+      }
+
+      // Initialize when page loads
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("DOM Content Loaded - Starting initialization");
+        console.log("Current URL:", window.location.href);
+
+        // Clear existing data to force fresh API call
+        console.log("Clearing existing sessionStorage data");
+        sessionStorage.removeItem("ezra_app_data");
+
+        // Always start fresh initialization (for testing)
+        console.log("Starting fresh initialization");
+        initializeApp();
+      });
+
+      // Also try to initialize immediately in case DOMContentLoaded already fired
+      if (document.readyState === "loading") {
+        console.log("Document still loading, waiting for DOMContentLoaded");
+      } else {
+        console.log("Document already loaded, initializing immediately");
+        setTimeout(() => {
+          // Clear existing data to force fresh API call
+          sessionStorage.removeItem("ezra_app_data");
+          initializeApp();
+        }, 100);
+      }
+
+      // Handle page visibility changes
+      document.addEventListener("visibilitychange", () => {
+        if (
+          document.visibilityState === "visible" &&
+          appData.loadingProgress < 100
+        ) {
+          // Resume loading if user returns to page
+          console.log("Page became visible, checking loading status...");
+        }
+      });
     </script>
-</body>
+  </body>
 </html>

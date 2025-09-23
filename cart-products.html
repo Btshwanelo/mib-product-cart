@@ -20,13 +20,17 @@
 
       /* Header */
       .header {
-        background: #0ba5ec;
-        color: white;
+        background: #fff;
+        color: black;
         padding: 12px 24px;
         display: flex;
         align-items: center;
         justify-content: center;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        font-size: 20px;
       }
 
       .logo {
@@ -313,21 +317,19 @@
       }
 
       .back-btn {
-        background: none;
-        border: none;
-        color: #6b7280;
-        font-size: 14px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-      }
-
-      .save-btn {
         background: #f3f4f6;
         border: none;
         color: #6b7280;
+        font-size: 14px;
+        padding: 8px 24px;
+        border-radius: 6px;
+        cursor: not-allowed;
+      }
+
+      .save-btn {
+        background: #0086c9;
+        border: none;
+        color: white;
         font-size: 14px;
         padding: 8px 24px;
         border-radius: 6px;
@@ -489,14 +491,124 @@
         color: #dc2626;
         text-align: center;
       }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 0;
+        border-radius: 12px;
+        width: 400px;
+        max-width: 90%;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px 24px 0 24px;
+      }
+
+      .modal-icon {
+        width: 48px;
+        height: 48px;
+        background: #fef3c7;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+      }
+
+      .modal-icon svg {
+        color: #dc6803;
+      }
+
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #9ca3af;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+      }
+
+      .modal-body {
+        padding: 16px 24px 24px;
+      }
+
+      .modal-body h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 8px;
+      }
+
+      .modal-body p {
+        font-size: 14px;
+        color: #6b7280;
+        line-height: 1.5;
+      }
+
+      .modal-buttons {
+        display: flex;
+        gap: 12px;
+        padding: 0 24px 24px;
+      }
+
+      .modal-btn-primary {
+        background: #0086c9;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        flex: 1;
+      }
+
+      .modal-btn-primary:hover {
+        background: #0284c7;
+      }
+
+      .modal-btn-secondary {
+        background: white;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        flex: 1;
+      }
+
+      .modal-btn-secondary:hover {
+        background: #f9fafb;
+      }
     </style>
   </head>
   <body>
     <!-- Header -->
-     <div class="header">
-        <div class="">
-            <h1>Burial Planning of: James Bond (B029384)</h1>
-        </div>
+    <div class="header">
+      <div class="">
+        <h1 id="burial-header">Burial Planning</h1>
+      </div>
     </div>
 
     <!-- Progress Steps -->
@@ -505,7 +617,7 @@
         <div class="step active">
           <div class="step-icon">
             <img
-              src="/assets/package.png"
+              src="/WebResource?id=package"
               width="24"
               height="24"
               alt="Package Icon"
@@ -516,7 +628,7 @@
         <div class="step">
           <div class="step-icon">
             <img
-              src="/assets/shopping-bag-03.png"
+              src="/WebResource?id=shopping-bag-03"
               width="24"
               height="24"
               alt="Package Icon"
@@ -527,7 +639,7 @@
         <div class="step">
           <div class="step-icon">
             <img
-              src="/assets/file-check-02.png"
+              src="/WebResource?id=file-check-02"
               width="24"
               height="24"
               alt="Package Icon"
@@ -556,43 +668,224 @@
       <button class="save-btn">Save</button>
     </div>
 
+    <!-- Save Modal -->
+    <div id="save-modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-circle-alert-icon lucide-circle-alert"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" x2="12" y1="8" y2="12" />
+              <line x1="12" x2="12.01" y1="16" y2="16" />
+            </svg>
+          </div>
+          <button class="modal-close" onclick="closeSaveModal()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <h3>Saving Order</h3>
+          <p>Are you sure you want to save this order to continue later?</p>
+        </div>
+        <div class="modal-buttons">
+          <button class="modal-btn-primary" onclick="confirmSave()">
+            Yes, Save
+          </button>
+          <button class="modal-btn-secondary" onclick="closeSaveModal()">
+            No, Continue
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script>
       // API Configuration
-      const API_BASE_URL = "https://fff.sandbox.api.ezra360.com/api/v1.0";
-      const API_KEY = "TPiNa.aoAj0IkST3vQlyM9BRPiKphXmXSIxinKB8mPXSbnx5U";
+      const API_BASE_URL = "https://mib.sandbox.api.ezra360.com/api/v1.0";
+      const API_KEY = "1bcTCI.pWzRtox0PIXllAvT0hrPd0Sz32FvlhBIxBKgouivzfx";
 
       // Global variables
       let allPackages = [];
+      let urlParams = {}; // Add this line
+      let burialId = ""; // Will be extracted from URL parameters
+
+      // Function to extract URL parameters
+      function getUrlParameters() {
+        const params = {};
+        let currentUrl = window.location.href;
+
+        // Try to get the parent URL if we're in an iframe/nested context
+        try {
+          if (
+            window.parent &&
+            window.parent !== window &&
+            window.parent.location
+          ) {
+            currentUrl = window.parent.location.href;
+          }
+        } catch (e) {
+          // Cross-origin restriction - try alternative methods
+          console.log(
+            "Cannot access parent URL due to cross-origin restrictions"
+          );
+        }
+
+        // Alternative: Check if referrer contains our parameters
+        if (document.referrer && document.referrer.includes("title=")) {
+          currentUrl = document.referrer;
+        }
+
+        // Debug logging
+        console.log("Current page URL:", window.location.href);
+        console.log("Parent/Referrer URL:", currentUrl);
+        console.log("Document referrer:", document.referrer);
+
+        try {
+          // Method 1: Parse current page parameters
+          const urlSearchParams = new URLSearchParams(window.location.search);
+          for (const [key, value] of urlSearchParams) {
+            params[key] = decodeURIComponent(value);
+          }
+
+          // Method 2: Parse from the full URL (parent or referrer)
+          const titleMatch = currentUrl.match(/[?&]title=([^&]+)/);
+          const burialIdMatch = currentUrl.match(/[?&]burialId=([^&]+)/);
+
+          if (titleMatch) {
+            try {
+              params.title = decodeURIComponent(titleMatch[1]);
+            } catch (e) {
+              params.title = titleMatch[1];
+            }
+          }
+
+          if (burialIdMatch) {
+            try {
+              params.burialId = decodeURIComponent(burialIdMatch[1]);
+            } catch (e) {
+              params.burialId = burialIdMatch[1];
+            }
+          }
+
+          // Method 3: Try to parse from hash if parameters are there
+          if (window.location.hash) {
+            const hashParams = window.location.hash.substring(1);
+            const hashUrlParams = new URLSearchParams(hashParams);
+            for (const [key, value] of hashUrlParams) {
+              params[key] = decodeURIComponent(value);
+            }
+          }
+        } catch (error) {
+          console.error("Error parsing URL parameters:", error);
+        }
+
+        return params;
+      }
+
+      // Function to extract burial ID and name from title parameter
+      function parseTitle(title) {
+        if (!title) return { burialId: "", name: "" };
+
+        // Expected format: "B001665 - Thabiso Zungu"
+        const parts = title.split(" - ");
+        if (parts.length >= 2) {
+          return {
+            burialId: parts[0].trim(),
+            name: parts.slice(1).join(" - ").trim(), // Join back in case there are multiple dashes
+          };
+        }
+
+        // Fallback: if format is different, try to extract what we can
+        return {
+          burialId: parts[0] || "",
+          name: title,
+        };
+      }
+
+      // Function to update the header with extracted information
+      function updateHeader() {
+        urlParams = getUrlParameters();
+        const headerElement = document.getElementById("burial-header");
+
+        if (urlParams.title) {
+          const { burialId: extractedBurialId, name } = parseTitle(
+            urlParams.title
+          );
+
+          if (name && extractedBurialId) {
+            headerElement.textContent = `Burial Planning of: ${name} (${extractedBurialId})`;
+            burialId = extractedBurialId; // Store the extracted burialId
+          } else if (urlParams.title) {
+            headerElement.textContent = `Burial Planning of: ${urlParams.title}`;
+          }
+        } else if (urlParams.burialId) {
+          // Fallback: if burialId is passed as separate parameter
+          const name = urlParams.name || "Unknown";
+          headerElement.textContent = `Burial Planning of: ${name} (${urlParams.burialId})`;
+          burialId = urlParams.burialId; // Store the extracted burialId
+        }
+
+        // Log extracted parameters for debugging
+        console.log("Extracted URL Parameters:", urlParams);
+        console.log("Extracted BurialId:", burialId);
+        console.log(
+          "Parsed title:",
+          urlParams.title ? parseTitle(urlParams.title) : "No title parameter"
+        );
+      }
 
       // Fetch packages from API
       async function fetchPackages() {
         try {
+          console.log("Fetching packages with burialId:", burialId);
           const myHeaders = new Headers();
           myHeaders.append("api-key", API_KEY);
           myHeaders.append("Content-Type", "application/json");
 
           const raw = JSON.stringify({
-            "entityName": "ProductGroup",
-            "requestName": "ProductGroupListingExecuteRequest"
+            entityName: "ProductGroup",
+            requestName: "ProductGroupListingExecuteRequest",
+            inputParamters: {
+              ProductData: {
+                BurialId: burialId,
+              },
+            },
           });
 
           const requestOptions = {
             method: "POST",
             headers: myHeaders,
             body: raw,
-            redirect: "follow"
+            redirect: "follow",
           };
 
-          const response = await fetch(`${API_BASE_URL}/entities/ExecuteRequest`, requestOptions);
+          const response = await fetch(
+            `${API_BASE_URL}/entities/ExecuteRequest`,
+            requestOptions
+          );
           const result = await response.json();
 
-          if (result.isSuccess && result.outputParameters && result.outputParameters.ProductGroupData) {
+          if (
+            result.isSuccess &&
+            result.outputParameters &&
+            result.outputParameters.ProductGroupData
+          ) {
             return result.outputParameters.ProductGroupData;
           } else {
-            throw new Error('Failed to fetch packages');
+            throw new Error("Failed to fetch packages");
           }
         } catch (error) {
-          console.error('Error fetching packages:', error);
+          console.error("Error fetching packages:", error);
           throw error;
         }
       }
@@ -600,7 +893,7 @@
       // Format price for display
       function formatPrice(price) {
         if (price === 0 || price === 0.0) {
-          return 'Contact for Price';
+          return "Contact for Price";
         }
         return `R${price.toLocaleString()}`;
       }
@@ -608,77 +901,101 @@
       // Parse benefits string into array
       function parseBenefits(benefitsString) {
         if (!benefitsString) return [];
-        return benefitsString.split(',').map(benefit => benefit.trim()).filter(benefit => benefit.length > 0);
+        return benefitsString
+          .split(",")
+          .map((benefit) => benefit.trim())
+          .filter((benefit) => benefit.length > 0);
       }
 
       // Create package card HTML
       function createPackageCard(packageData, index) {
         const benefits = parseBenefits(packageData.benefits);
-        const hasImage = packageData.url && packageData.url.trim() !== '';
-        
+        const imageUrl = Array.isArray(packageData.url)
+          ? packageData.url[0]
+          : packageData.url;
+        const hasImage = imageUrl && imageUrl.trim() !== "";
+
         return `
-          <div class="package-card" data-package-id="${packageData.productGroupId}">
+          <div class="package-card" data-package-id="${
+            packageData.productGroupId
+          }">
             <div class="package-image">
-              ${hasImage ? 
-                `<img
-                  src="${packageData.url}"
+              ${
+                hasImage
+                  ? `<img
+                  src="${imageUrl}"
                   alt="${packageData.productGroupName}"
                   onerror="this.parentElement.innerHTML='<div class=&quot;package-image-placeholder&quot;>No Image Available</div>'"
-                />` :
-                `<div class="package-image-placeholder">No Image Available</div>`
+                />`
+                  : `<div class="package-image-placeholder">No Image Available</div>`
               }
             </div>
             <h3 class="package-name">${packageData.productGroupName}</h3>
             <p class="package-price">${formatPrice(packageData.price)}</p>
-            <button class="proceed-btn" data-package-id="${packageData.productGroupId}">Proceed to cart</button>
-            ${benefits.length > 0 ? `
+            <button class="proceed-btn" data-package-id="${
+              packageData.productGroupId
+            }">Proceed to cart</button>
+            ${
+              benefits.length > 0
+                ? `
               <button class="view-benefits" data-package="package-${index}">
                 View Benefits
               </button>
               <div class="benefits-section" id="benefits-package-${index}">
                 <h4 class="benefits-title">Benefits</h4>
                 <ul class="benefits-list">
-                  ${benefits.map(benefit => `
+                  ${benefits
+                    .map(
+                      (benefit) => `
                     <li class="benefit-item">
                       <div class="benefit-icon"></div>
                       <span>${benefit}</span>
                     </li>
-                  `).join('')}
+                  `
+                    )
+                    .join("")}
                 </ul>
               </div>
-            ` : ''}
+            `
+                : ""
+            }
           </div>
         `;
       }
 
       // Render packages
       function renderPackages(packages) {
-        const container = document.getElementById('packages-container');
-        
+        const container = document.getElementById("packages-container");
+
         if (!packages || packages.length === 0) {
-          container.innerHTML = '<div class="error">No packages available</div>';
+          container.innerHTML =
+            '<div class="error">No packages available</div>';
           return;
         }
 
         const packagesGrid = `
           <div class="packages-grid">
-            ${packages.map((packageData, index) => createPackageCard(packageData, index)).join('')}
+            ${packages
+              .map((packageData, index) =>
+                createPackageCard(packageData, index)
+              )
+              .join("")}
           </div>
         `;
-        
+
         container.innerHTML = packagesGrid;
         attachEventListeners();
       }
 
       // Show error state
       function showError(message) {
-        const container = document.getElementById('packages-container');
+        const container = document.getElementById("packages-container");
         container.innerHTML = `<div class="error">${message}</div>`;
       }
 
       // Find package by ID
       function findPackageById(packageId) {
-        return allPackages.find(pkg => pkg.productGroupId === packageId);
+        return allPackages.find((pkg) => pkg.productGroupId === packageId);
       }
 
       // Attach event listeners to dynamic content
@@ -689,24 +1006,24 @@
             e.stopPropagation();
             const packageId = btn.getAttribute("data-package-id");
             const packageData = findPackageById(packageId);
-            
+
             if (!packageData) {
-              alert('Package not found. Please try again.');
+              alert("Package not found. Please try again.");
               return;
             }
-            
+
             // Store selected package info in session storage for the cart page
             const selectedPackage = {
-              id: packageId,
-              name: packageData.productGroupName,
-              price: packageData.price,
-              benefits: packageData.benefits,
-              timestamp: Date.now()
+              ...packageData,
+              timestamp: Date.now(),
             };
-            sessionStorage.setItem('selectedPackage', JSON.stringify(selectedPackage));
-            
+            sessionStorage.setItem(
+              "selectedPackage",
+              JSON.stringify(selectedPackage)
+            );
+
             // Route to cart page
-            window.location.href = '/v3/cart.html';
+            window.location.href = "/WebResource?id=cart";
           });
         });
 
@@ -715,8 +1032,10 @@
           btn.addEventListener("click", (e) => {
             e.stopPropagation();
             const packageType = btn.getAttribute("data-package");
-            const benefitsSection = document.getElementById(`benefits-${packageType}`);
-            
+            const benefitsSection = document.getElementById(
+              `benefits-${packageType}`
+            );
+
             if (!benefitsSection) return;
 
             if (benefitsSection.classList.contains("expanded")) {
@@ -724,12 +1043,16 @@
               btn.classList.remove("expanded");
             } else {
               // Close all other expanded sections
-              document.querySelectorAll(".benefits-section.expanded").forEach((section) => {
-                section.classList.remove("expanded");
-              });
-              document.querySelectorAll(".view-benefits.expanded").forEach((button) => {
-                button.classList.remove("expanded");
-              });
+              document
+                .querySelectorAll(".benefits-section.expanded")
+                .forEach((section) => {
+                  section.classList.remove("expanded");
+                });
+              document
+                .querySelectorAll(".view-benefits.expanded")
+                .forEach((button) => {
+                  button.classList.remove("expanded");
+                });
 
               // Open clicked section
               benefitsSection.classList.add("expanded");
@@ -741,11 +1064,14 @@
 
       // Initialize the page
       async function initializePage() {
+        // First update the header with URL parameters
+        updateHeader();
+
         try {
           allPackages = await fetchPackages();
           renderPackages(allPackages);
         } catch (error) {
-          showError('Failed to load packages. Please try again later.');
+          showError("Failed to load packages. Please try again later.");
         }
       }
 
@@ -755,13 +1081,44 @@
         window.history.back();
       });
 
+      // Add these new functions:
+      function closeSaveModal() {
+        document.getElementById("save-modal").style.display = "none";
+      }
+
+      function confirmSave() {
+        // Save current selections
+        // const orderData = {
+        //   basePackage: {
+        //     name: basePackageName,
+        //     price: basePackagePrice
+        //   },
+        //   extras: selectedExtras,
+        //   total: calculateTotal(),
+        //   timestamp: Date.now()
+        // };
+        // sessionStorage.setItem('orderData', JSON.stringify(orderData));
+
+        // Redirect to /cart
+        window.location.href = "/cart";
+      }
+
+      // Close modal when clicking outside of it
+      window.onclick = function (event) {
+        const modal = document.getElementById("save-modal");
+        if (event.target == modal) {
+          closeSaveModal();
+        }
+      };
+
+      // Replace the existing save button handler with this:
       document.querySelector(".save-btn").addEventListener("click", () => {
-        // Save current state if needed
-        alert("Current packages loaded successfully");
+        // Show the save modal
+        document.getElementById("save-modal").style.display = "block";
       });
 
       // Start the application
-      document.addEventListener('DOMContentLoaded', initializePage);
+      document.addEventListener("DOMContentLoaded", initializePage);
     </script>
   </body>
 </html>
