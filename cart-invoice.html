@@ -1018,21 +1018,11 @@
           // Extract burial ID from URL parameters
           const burialId = urlParams.burialId;
 
-          // Prepare ProductGroupData using selectedPackageData
-          // Only include ProductGroupData if there's a valid base package (price > 0)
-          const productGroupData = [];
+          // Check if we have a base product or only extras
           const basePackagePrice =
             selectedPackageData?.price || orderData.basePackage.price || 0;
-
-          if (basePackagePrice > 0 && selectedPackageData?.productGroupId) {
-            productGroupData.push({
-              productGroupId: selectedPackageData.productGroupId,
-              productGroupName:
-                selectedPackageData.productGroupName ||
-                orderData.basePackage.name,
-              price: basePackagePrice,
-            });
-          }
+          const hasBaseProduct =
+            basePackagePrice > 0 && selectedPackageData?.productGroupId;
 
           // Prepare ProductData (extras) using orderData.extras
           const productData = [];
@@ -1071,42 +1061,72 @@
             });
           }
 
-          // Prepare BenefitData using selectedPackageData.benefits
-          const benefitData = [];
-          if (selectedPackageData && selectedPackageData.benefits) {
-            const benefits = parseBenefits(selectedPackageData.benefits);
-            benefits.forEach((benefit) => {
-              // Extract just the benefit name (remove quantities like ": 1")
-              const cleanBenefitName = benefit.split(":")[0].trim();
-              if (cleanBenefitName) {
-                benefitData.push({
-                  BenefitName: cleanBenefitName,
-                });
-              }
-            });
-          }
-
           const myHeaders = new Headers();
           myHeaders.append("api-key", API_KEY);
           myHeaders.append("Content-Type", "application/json");
 
-          const payload = {
-            entityName: "Burial",
-            requestName: "FecthingProductData",
-            inputParamters: {
-              ProductData: {
-                BurialId: burialId,
-                ProductGroupData: productGroupData,
-                ProductData: productData,
-                BenefitData: benefitData,
+          let payload;
+          let requestOptions;
+
+          if (hasBaseProduct) {
+            // Original API call for when we have a base product
+            // Prepare ProductGroupData using selectedPackageData
+            const productGroupData = [];
+            if (selectedPackageData?.productGroupId) {
+              productGroupData.push({
+                productGroupId: selectedPackageData.productGroupId,
+                productGroupName:
+                  selectedPackageData.productGroupName ||
+                  orderData.basePackage.name,
+                price: basePackagePrice,
+              });
+            }
+
+            // Prepare BenefitData using selectedPackageData.benefits
+            const benefitData = [];
+            if (selectedPackageData && selectedPackageData.benefits) {
+              const benefits = parseBenefits(selectedPackageData.benefits);
+              benefits.forEach((benefit) => {
+                // Extract just the benefit name (remove quantities like ": 1")
+                const cleanBenefitName = benefit.split(":")[0].trim();
+                if (cleanBenefitName) {
+                  benefitData.push({
+                    BenefitName: cleanBenefitName,
+                  });
+                }
+              });
+            }
+
+            payload = {
+              entityName: "Burial",
+              requestName: "FecthingProductData",
+              inputParamters: {
+                ProductData: {
+                  BurialId: burialId,
+                  ProductGroupData: productGroupData,
+                  ProductData: productData,
+                  BenefitData: benefitData,
+                },
               },
-            },
-          };
+            };
+          } else {
+            // New API call for when we only have extras (no base product)
+            payload = {
+              entityName: "Burial",
+              requestName: "AddExtrasToBurial",
+              inputParamters: {
+                ProductData: {
+                  BurialId: burialId,
+                  ProductData: productData,
+                },
+              },
+            };
+          }
 
           // Log the payload for debugging
           console.log("Submitting payload:", JSON.stringify(payload, null, 2));
 
-          const requestOptions = {
+          requestOptions = {
             method: "POST",
             headers: myHeaders,
             body: JSON.stringify(payload),
@@ -1157,6 +1177,30 @@
         }, 5000);
       }
 
+      // Check if back button should navigate to extras page
+      function shouldNavigateToExtras() {
+        try {
+          const ezraAppData = sessionStorage.getItem("ezra_app_data");
+          if (ezraAppData) {
+            const parsed = JSON.parse(ezraAppData);
+            if (
+              parsed.burialData &&
+              parsed.burialData.outputParameters &&
+              parsed.burialData.outputParameters.PageIndicator ===
+                "CustomizationPage"
+            ) {
+              console.log(
+                "PageIndicator is CustomizationPage - back button will navigate to extras page"
+              );
+              return true;
+            }
+          }
+        } catch (error) {
+          console.error("Error checking ezra_app_data:", error);
+        }
+        return false;
+      }
+
       // Initialize the invoice page
       async function initializeInvoicePage() {
         updateHeader();
@@ -1205,7 +1249,12 @@
         .addEventListener("click", submitOrder);
 
       document.querySelector(".back-btn").addEventListener("click", () => {
-        window.location.href = "/WebResource?id=cart-cart"; // Navigate back to cart page
+        // Check if we should navigate to extras page based on PageIndicator
+        if (shouldNavigateToExtras()) {
+          window.location.href = "/WebResource?id=cart-extras"; // Navigate back to extras page
+        } else {
+          window.location.href = "/WebResource?id=cart-cart"; // Navigate back to cart page
+        }
       });
 
       // Replace the existing save button handler with this:
@@ -1234,7 +1283,8 @@
         sessionStorage.setItem("orderData", JSON.stringify(currentOrderData));
 
         // Redirect to /cart
-        window.location.href = "/WebResource?id=cat-cart";
+        window.parent.location.href =
+          "https://mib.sandbox.ezra360.com/Entity/List/Burial?mod=BurialServices";
       }
 
       // Close modal when clicking outside of it

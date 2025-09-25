@@ -1106,7 +1106,8 @@
         // sessionStorage.setItem('orderData', JSON.stringify(orderData));
 
         // Redirect to /cart
-        window.location.href = "/WebResource?id=cart-cart";
+        window.parent.location.href =
+          "https://mib.sandbox.ezra360.com/Entity/List/Burial?mod=BurialServices";
       }
 
       // Close modal when clicking outside of it

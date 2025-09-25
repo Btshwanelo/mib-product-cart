@@ -1392,9 +1392,44 @@
         }
       }
 
+      // Check if back button should be disabled based on session storage
+      function checkAndDisableBackButton() {
+        try {
+          const ezraAppData = sessionStorage.getItem("ezra_app_data");
+          if (ezraAppData) {
+            const parsed = JSON.parse(ezraAppData);
+            if (
+              parsed.burialData &&
+              parsed.burialData.outputParameters &&
+              parsed.burialData.outputParameters.PageIndicator ===
+                "CustomizationPage"
+            ) {
+              // Disable the back button
+              const backButton = document.querySelector(".back-btn");
+              if (backButton) {
+                backButton.disabled = true;
+                backButton.style.opacity = "0.5";
+                backButton.style.cursor = "not-allowed";
+              }
+
+              console.log(
+                "Back button disabled due to PageIndicator: CustomizationPage"
+              );
+              return true;
+            }
+          }
+        } catch (error) {
+          console.error("Error checking ezra_app_data:", error);
+        }
+        return false;
+      }
+
       // Initialize the extras page
       async function initializeExtrasPage() {
         updateHeader();
+
+        // Check if back button should be disabled
+        checkAndDisableBackButton();
 
         try {
           // Load selected package info
@@ -1514,8 +1549,9 @@
           }
         });
 
-        // Redirect to /cart
-        window.location.href = "/WebResource?id=cart-cart";
+        // Redirect the parent page to the specified URL
+        window.parent.location.href =
+          "https://mib.sandbox.ezra360.com/Entity/List/Burial?mod=BurialServices";
       }
 
       // Close modal when clicking outside of it
